@@ -13,6 +13,8 @@
             --text-secondary: #a0a0b0;
             --accent-gold: #d4af37;
             --accent-blue: #4a9eff;
+            --accent-green: #27ae60;
+            --accent-orange: #f39c12;
             --border-color: #2a2a3a;
         }
 
@@ -58,6 +60,19 @@
         .subtitle {
             color: var(--text-secondary);
             font-size: 1rem;
+        }
+
+        .blockchain-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(247, 147, 26, 0.1);
+            border: 1px solid rgba(247, 147, 26, 0.3);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #f7931a;
         }
 
         .new-note-section {
@@ -128,13 +143,28 @@
             transition: all 0.2s;
         }
 
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .btn-primary {
             background: var(--accent-gold);
             color: var(--bg-primary);
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: #e8c34a;
+            transform: translateY(-1px);
+        }
+
+        .btn-bitcoin {
+            background: #f7931a;
+            color: white;
+        }
+
+        .btn-bitcoin:hover:not(:disabled) {
+            background: #e8850f;
             transform: translateY(-1px);
         }
 
@@ -144,7 +174,7 @@
             border: 1px solid var(--border-color);
         }
 
-        .btn-secondary:hover {
+        .btn-secondary:hover:not(:disabled) {
             background: var(--border-color);
         }
 
@@ -152,6 +182,7 @@
             display: flex;
             gap: 0.75rem;
             margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         .notes-section {
@@ -163,6 +194,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .note-card {
@@ -184,6 +217,7 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 1rem;
+            gap: 1rem;
         }
 
         .note-title {
@@ -204,9 +238,10 @@
 
         .note-meta {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             margin-bottom: 1rem;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .note-tag {
@@ -222,35 +257,56 @@
         .tag-terrestrial { background: rgba(39, 174, 96, 0.2); color: #7dcea0; }
         .tag-theoretical { background: rgba(230, 126, 34, 0.2); color: #f0b27a; }
 
+        .blockchain-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .blockchain-status.pending {
+            background: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+        }
+
+        .blockchain-status.confirmed {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+        }
+
+        .blockchain-status.none {
+            background: rgba(160, 160, 176, 0.2);
+            color: var(--text-secondary);
+        }
+
         .note-observation {
             margin-bottom: 1rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .note-observation h4 {
+        .note-observation h4, .note-interpretation h4 {
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+        }
+
+        .note-interpretation h4 {
+            color: var(--accent-gold);
         }
 
         .note-interpretation {
             margin-bottom: 1rem;
         }
 
-        .note-interpretation h4 {
-            font-size: 0.8rem;
-            color: var(--accent-gold);
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
         .note-source {
             font-size: 0.85rem;
             color: var(--text-secondary);
+            margin-bottom: 0.75rem;
         }
 
         .note-source a {
@@ -307,22 +363,6 @@
             opacity: 0.5;
         }
 
-        .export-section {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .hash-display {
-            background: var(--bg-tertiary);
-            padding: 1rem;
-            border-radius: 6px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.85rem;
-            word-break: break-all;
-            margin-top: 1rem;
-        }
-
         .verification-info {
             margin-top: 2rem;
             padding: 1.5rem;
@@ -350,6 +390,74 @@
             font-size: 0.85rem;
         }
 
+        .verification-info a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        .verification-info a:hover {
+            text-decoration: underline;
+        }
+
+        .export-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .status-message {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .status-message.success {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            color: #7dcea0;
+        }
+
+        .status-message.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .status-message.info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            color: #7fb3d5;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .ots-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            color: #f7931a;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        .ots-download:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 1rem;
@@ -361,11 +469,15 @@
 
             .note-header {
                 flex-direction: column;
-                gap: 0.5rem;
             }
 
             .btn-group {
                 flex-direction: column;
+            }
+
+            .notes-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -375,6 +487,9 @@
         <header>
             <h1><span>ΞĐ</span> Framework Observer</h1>
             <p class="subtitle">Timestamped observations connecting anomalies to DSO predictions</p>
+            <div class="blockchain-badge">
+                <span>₿</span> Bitcoin blockchain timestamping via OpenTimestamps
+            </div>
         </header>
 
         <section class="new-note-section">
@@ -412,13 +527,17 @@
             </div>
 
             <div class="btn-group">
-                <button class="btn btn-primary" onclick="addNote()">
-                    <span>⏱</span> Timestamp & Save
+                <button class="btn btn-primary" onclick="addNote(false)" id="saveBtn">
+                    <span>💾</span> Save Locally
+                </button>
+                <button class="btn btn-bitcoin" onclick="addNote(true)" id="timestampBtn">
+                    <span>₿</span> Save + Blockchain Timestamp
                 </button>
                 <button class="btn btn-secondary" onclick="clearForm()">
                     Clear
                 </button>
             </div>
+            <div id="statusMessage"></div>
         </section>
 
         <section class="notes-section">
@@ -439,11 +558,11 @@
         </section>
 
         <section class="verification-info">
-            <h3>Verification Method</h3>
-            <p>Each note includes a SHA-256 hash of its content concatenated with its ISO timestamp. This creates a tamper-evident record.</p>
-            <p>To verify: concatenate the note's JSON content (without the hash field) with the timestamp, then compute SHA-256.</p>
-            <p>For additional verification, commit the exported JSON to a public Git repository. Git's commit hashes provide an additional layer of timestamping.</p>
-            <p><code>echo -n "content|timestamp" | sha256sum</code></p>
+            <h3>Verification & Trust</h3>
+            <p><strong>Local Hash:</strong> Each note includes a SHA-256 hash of its content. This proves the content hasn't been modified since creation.</p>
+            <p><strong>Blockchain Timestamp:</strong> Notes timestamped via OpenTimestamps are anchored to the Bitcoin blockchain. This proves the note existed at a specific point in time, independently verifiable by anyone.</p>
+            <p><strong>How to verify:</strong> Download the <code>.ots</code> proof file and verify at <a href="https://opentimestamps.org/" target="_blank">opentimestamps.org</a> or with the <code>ots</code> CLI tool.</p>
+            <p><strong>Git commits:</strong> For additional verification, commit your exported JSON to a public Git repo. Git's commit hashes add another timestamp layer.</p>
         </section>
 
         <section class="export-section">
@@ -454,22 +573,26 @@
         </section>
     </div>
 
+    <!-- OpenTimestamps library -->
+    <script src="https://unpkg.com/opentimestamps@0.4.9/dist/opentimestamps.min.js"></script>
+    
     <script>
-        // Storage key
         const STORAGE_KEY = 'dso_observer_notes';
+        const OTS_CALENDARS = [
+            'https://alice.btc.calendar.opentimestamps.org',
+            'https://bob.btc.calendar.opentimestamps.org',
+            'https://finney.calendar.eternitywall.com'
+        ];
 
-        // Load notes from localStorage
         function loadNotes() {
             const stored = localStorage.getItem(STORAGE_KEY);
             return stored ? JSON.parse(stored) : [];
         }
 
-        // Save notes to localStorage
         function saveNotes(notes) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
         }
 
-        // Generate SHA-256 hash
         async function generateHash(content) {
             const encoder = new TextEncoder();
             const data = encoder.encode(content);
@@ -478,8 +601,38 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // Add new note
-        async function addNote() {
+        function showStatus(message, type = 'info') {
+            const el = document.getElementById('statusMessage');
+            el.className = `status-message ${type}`;
+            el.innerHTML = message;
+            el.style.display = 'block';
+        }
+
+        function hideStatus() {
+            document.getElementById('statusMessage').style.display = 'none';
+        }
+
+        function setButtonsDisabled(disabled) {
+            document.getElementById('saveBtn').disabled = disabled;
+            document.getElementById('timestampBtn').disabled = disabled;
+        }
+
+        async function submitToOpenTimestamps(hashBytes) {
+            // Create detached timestamp file from hash
+            const detached = OpenTimestamps.DetachedTimestampFile.fromHash(
+                new OpenTimestamps.Ops.OpSHA256(),
+                hashBytes
+            );
+            
+            // Submit to calendars
+            await OpenTimestamps.stamp(detached);
+            
+            // Serialize the proof
+            const otsProof = detached.serializeToBytes();
+            return otsProof;
+        }
+
+        async function addNote(withBlockchain = false) {
             const title = document.getElementById('title').value.trim();
             const domain = document.getElementById('domain').value;
             const source = document.getElementById('source').value.trim();
@@ -487,9 +640,12 @@
             const interpretation = document.getElementById('interpretation').value.trim();
 
             if (!title || !observation || !interpretation) {
-                alert('Please fill in title, observation, and interpretation.');
+                showStatus('Please fill in title, observation, and interpretation.', 'error');
                 return;
             }
+
+            setButtonsDisabled(true);
+            hideStatus();
 
             const timestamp = new Date().toISOString();
             
@@ -502,14 +658,34 @@
                 timestamp
             };
 
-            // Generate hash of content + timestamp
-            const hashInput = JSON.stringify(noteContent) + '|' + timestamp;
-            const hash = await generateHash(hashInput);
+            const contentString = JSON.stringify(noteContent);
+            const hash = await generateHash(contentString);
+            
+            // Convert hash to bytes for OTS
+            const hashBytes = new Uint8Array(hash.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+
+            let otsProof = null;
+            let otsStatus = 'none';
+
+            if (withBlockchain) {
+                showStatus('<span class="spinner"></span> Submitting to OpenTimestamps calendars...', 'info');
+                
+                try {
+                    otsProof = await submitToOpenTimestamps(hashBytes);
+                    otsStatus = 'pending';
+                    showStatus('✓ Submitted to Bitcoin blockchain via OpenTimestamps. Confirmation pending (~1-2 hours for Bitcoin block inclusion).', 'success');
+                } catch (err) {
+                    console.error('OpenTimestamps error:', err);
+                    showStatus('⚠ Blockchain timestamp failed: ' + err.message + '. Note saved locally with hash only.', 'error');
+                }
+            }
 
             const note = {
                 ...noteContent,
                 id: Date.now().toString(36) + Math.random().toString(36).substr(2),
-                hash
+                hash,
+                otsProof: otsProof ? arrayToBase64(otsProof) : null,
+                otsStatus
             };
 
             const notes = loadNotes();
@@ -518,9 +694,43 @@
 
             clearForm();
             renderNotes();
+            setButtonsDisabled(false);
+
+            if (!withBlockchain) {
+                showStatus('✓ Note saved locally with SHA-256 hash.', 'success');
+            }
+
+            setTimeout(hideStatus, 5000);
         }
 
-        // Clear form
+        function arrayToBase64(bytes) {
+            let binary = '';
+            for (let i = 0; i < bytes.length; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        function base64ToArray(base64) {
+            const binary = atob(base64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        function downloadOtsProof(noteId) {
+            const notes = loadNotes();
+            const note = notes.find(n => n.id === noteId);
+            if (!note || !note.otsProof) return;
+
+            const bytes = base64ToArray(note.otsProof);
+            const blob = new Blob([bytes], { type: 'application/octet-stream' });
+            const filename = `dso-note-${note.id}.ots`;
+            downloadBlob(blob, filename);
+        }
+
         function clearForm() {
             document.getElementById('title').value = '';
             document.getElementById('source').value = '';
@@ -528,16 +738,14 @@
             document.getElementById('interpretation').value = '';
         }
 
-        // Delete note
         function deleteNote(id) {
-            if (!confirm('Delete this observation?')) return;
+            if (!confirm('Delete this observation? The blockchain timestamp (if any) will remain on the Bitcoin blockchain but you will lose the local proof file.')) return;
             
             const notes = loadNotes().filter(n => n.id !== id);
             saveNotes(notes);
             renderNotes();
         }
 
-        // Copy note as text
         function copyNote(id) {
             const notes = loadNotes();
             const note = notes.find(n => n.id === id);
@@ -547,6 +755,7 @@
 **Timestamp:** ${note.timestamp}
 **Domain:** ${note.domain}
 **Source:** ${note.source || 'N/A'}
+**Blockchain Status:** ${note.otsStatus === 'confirmed' ? 'Confirmed on Bitcoin' : note.otsStatus === 'pending' ? 'Pending confirmation' : 'Local only'}
 
 ## Observation (Standard Physics)
 ${note.observation}
@@ -554,14 +763,13 @@ ${note.observation}
 ## ΞĐ Framework Interpretation
 ${note.interpretation}
 
-**Verification Hash:** ${note.hash}`;
+**SHA-256 Hash:** ${note.hash}`;
 
             navigator.clipboard.writeText(text).then(() => {
                 alert('Note copied to clipboard');
             });
         }
 
-        // Render notes
         function renderNotes() {
             const container = document.getElementById('notes-container');
             const notes = loadNotes();
@@ -576,7 +784,21 @@ ${note.interpretation}
                 return;
             }
 
-            container.innerHTML = notes.map(note => `
+            container.innerHTML = notes.map(note => {
+                let statusHtml = '';
+                if (note.otsStatus === 'pending') {
+                    statusHtml = `<span class="blockchain-status pending">₿ Pending</span>`;
+                } else if (note.otsStatus === 'confirmed') {
+                    statusHtml = `<span class="blockchain-status confirmed">₿ Confirmed</span>`;
+                } else {
+                    statusHtml = `<span class="blockchain-status none">Local only</span>`;
+                }
+
+                const otsDownload = note.otsProof 
+                    ? `<span class="ots-download" onclick="downloadOtsProof('${note.id}')">📥 .ots proof</span>`
+                    : '';
+
+                return `
                 <div class="note-card ${note.domain}">
                     <div class="note-actions">
                         <button class="note-action-btn" onclick="copyNote('${note.id}')" title="Copy">📋</button>
@@ -588,6 +810,8 @@ ${note.interpretation}
                     </div>
                     <div class="note-meta">
                         <span class="note-tag tag-${note.domain}">${note.domain}</span>
+                        ${statusHtml}
+                        ${otsDownload}
                     </div>
                     <div class="note-observation">
                         <h4>Observation (Standard Physics)</h4>
@@ -597,13 +821,19 @@ ${note.interpretation}
                         <h4>ΞĐ Framework Interpretation</h4>
                         <p>${escapeHtml(note.interpretation)}</p>
                     </div>
-                    ${note.source ? `<div class="note-source">Source: <a href="${escapeHtml(note.source)}" target="_blank" rel="noopener">${escapeHtml(note.source)}</a></div>` : ''}
+                    ${note.source ? `<div class="note-source">Source: <a href="${escapeHtml(note.source)}" target="_blank" rel="noopener">${truncateUrl(note.source)}</a></div>` : ''}
                     <div class="note-hash">SHA-256: ${note.hash}</div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
-        // Format timestamp for display
+        function truncateUrl(url) {
+            if (url.length > 60) {
+                return url.substring(0, 57) + '...';
+            }
+            return url;
+        }
+
         function formatTimestamp(iso) {
             const d = new Date(iso);
             return d.toLocaleString('en-US', {
@@ -617,21 +847,18 @@ ${note.interpretation}
             });
         }
 
-        // Escape HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // Export as JSON
         function exportJSON() {
             const notes = loadNotes();
             const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
             downloadBlob(blob, `dso-observations-${new Date().toISOString().split('T')[0]}.json`);
         }
 
-        // Export as Markdown
         function exportMarkdown() {
             const notes = loadNotes();
             
@@ -643,13 +870,14 @@ ${note.interpretation}
                 md += `## ${i + 1}. ${note.title}\n\n`;
                 md += `**Timestamp:** \`${note.timestamp}\`  \n`;
                 md += `**Domain:** ${note.domain}  \n`;
+                md += `**Blockchain:** ${note.otsStatus === 'confirmed' ? 'Confirmed on Bitcoin' : note.otsStatus === 'pending' ? 'Pending confirmation' : 'Local only'}  \n`;
                 if (note.source) md += `**Source:** ${note.source}  \n`;
                 md += `\n`;
                 md += `### Observation (Standard Physics)\n\n`;
                 md += `${note.observation}\n\n`;
                 md += `### ΞĐ Framework Interpretation\n\n`;
                 md += `${note.interpretation}\n\n`;
-                md += `**Verification Hash:** \`${note.hash}\`\n\n`;
+                md += `**SHA-256 Hash:** \`${note.hash}\`\n\n`;
                 md += `---\n\n`;
             });
 
@@ -657,7 +885,6 @@ ${note.interpretation}
             downloadBlob(blob, `dso-observations-${new Date().toISOString().split('T')[0]}.md`);
         }
 
-        // Download blob helper
         function downloadBlob(blob, filename) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -669,7 +896,6 @@ ${note.interpretation}
             URL.revokeObjectURL(url);
         }
 
-        // Import notes
         function importNotes(event) {
             const file = event.target.files[0];
             if (!file) return;
