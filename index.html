@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΞĐ Framework Observer</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --text-primary: #e8e8f0;
+            --text-secondary: #a0a0b0;
+            --accent-gold: #d4af37;
+            --accent-blue: #4a9eff;
+            --border-color: #2a2a3a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        h1 span {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .new-note-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            background: #e8c34a;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .notes-section {
+            margin-top: 2rem;
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .note-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .note-card.cosmic { border-left: 3px solid #9b59b6; }
+        .note-card.quantum { border-left: 3px solid #3498db; }
+        .note-card.terrestrial { border-left: 3px solid #27ae60; }
+        .note-card.theoretical { border-left: 3px solid #e67e22; }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .note-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .note-timestamp {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            background: var(--bg-tertiary);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .note-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .note-tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tag-cosmic { background: rgba(155, 89, 182, 0.2); color: #bb8fce; }
+        .tag-quantum { background: rgba(52, 152, 219, 0.2); color: #7fb3d5; }
+        .tag-terrestrial { background: rgba(39, 174, 96, 0.2); color: #7dcea0; }
+        .tag-theoretical { background: rgba(230, 126, 34, 0.2); color: #f0b27a; }
+
+        .note-observation {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .note-observation h4 {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .note-interpretation {
+            margin-bottom: 1rem;
+        }
+
+        .note-interpretation h4 {
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .note-source {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .note-source a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        .note-source a:hover {
+            text-decoration: underline;
+        }
+
+        .note-hash {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            word-break: break-all;
+        }
+
+        .note-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .note-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .note-action-btn:hover {
+            opacity: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .export-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .hash-display {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+            margin-top: 1rem;
+        }
+
+        .verification-info {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .verification-info h3 {
+            font-size: 1rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .verification-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .verification-info code {
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .note-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span>ΞĐ</span> Framework Observer</h1>
+            <p class="subtitle">Timestamped observations connecting anomalies to DSO predictions</p>
+        </header>
+
+        <section class="new-note-section">
+            <div class="section-title">New Observation</div>
+            
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" placeholder="e.g., JADES-ID1 Galaxy Cluster Maturity">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="domain">Domain</label>
+                    <select id="domain">
+                        <option value="cosmic">Cosmic Scale</option>
+                        <option value="quantum">Quantum Scale</option>
+                        <option value="terrestrial">Terrestrial Scale</option>
+                        <option value="theoretical">Theoretical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="source">Source URL</label>
+                    <input type="text" id="source" placeholder="https://...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="observation">What was observed (standard physics view)</label>
+                <textarea id="observation" placeholder="Describe the observation and why it's considered anomalous under standard models..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="interpretation">ΞĐ Framework Interpretation</label>
+                <textarea id="interpretation" placeholder="How DSO explains this without anomaly..."></textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addNote()">
+                    <span>⏱</span> Timestamp & Save
+                </button>
+                <button class="btn btn-secondary" onclick="clearForm()">
+                    Clear
+                </button>
+            </div>
+        </section>
+
+        <section class="notes-section">
+            <div class="notes-header">
+                <div class="section-title">Recorded Observations</div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
+                    <button class="btn btn-secondary" onclick="exportMarkdown()">Export MD</button>
+                </div>
+            </div>
+            
+            <div id="notes-container">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔭</div>
+                    <p>No observations recorded yet.<br>Add your first timestamped note above.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="verification-info">
+            <h3>Verification Method</h3>
+            <p>Each note includes a SHA-256 hash of its content concatenated with its ISO timestamp. This creates a tamper-evident record.</p>
+            <p>To verify: concatenate the note's JSON content (without the hash field) with the timestamp, then compute SHA-256.</p>
+            <p>For additional verification, commit the exported JSON to a public Git repository. Git's commit hashes provide an additional layer of timestamping.</p>
+            <p><code>echo -n "content|timestamp" | sha256sum</code></p>
+        </section>
+
+        <section class="export-section">
+            <div class="section-title">Import Notes</div>
+            <div class="form-group">
+                <input type="file" id="importFile" accept=".json" onchange="importNotes(event)" style="margin-top: 0.5rem;">
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Storage key
+        const STORAGE_KEY = 'dso_observer_notes';
+
+        // Load notes from localStorage
+        function loadNotes() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        // Save notes to localStorage
+        function saveNotes(notes) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+        }
+
+        // Generate SHA-256 hash
+        async function generateHash(content) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(content);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Add new note
+        async function addNote() {
+            const title = document.getElementById('title').value.trim();
+            const domain = document.getElementById('domain').value;
+            const source = document.getElementById('source').value.trim();
+            const observation = document.getElementById('observation').value.trim();
+            const interpretation = document.getElementById('interpretation').value.trim();
+
+            if (!title || !observation || !interpretation) {
+                alert('Please fill in title, observation, and interpretation.');
+                return;
+            }
+
+            const timestamp = new Date().toISOString();
+            
+            const noteContent = {
+                title,
+                domain,
+                source,
+                observation,
+                interpretation,
+                timestamp
+            };
+
+            // Generate hash of content + timestamp
+            const hashInput = JSON.stringify(noteContent) + '|' + timestamp;
+            const hash = await generateHash(hashInput);
+
+            const note = {
+                ...noteContent,
+                id: Date.now().toString(36) + Math.random().toString(36).substr(2),
+                hash
+            };
+
+            const notes = loadNotes();
+            notes.unshift(note);
+            saveNotes(notes);
+
+            clearForm();
+            renderNotes();
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('title').value = '';
+            document.getElementById('source').value = '';
+            document.getElementById('observation').value = '';
+            document.getElementById('interpretation').value = '';
+        }
+
+        // Delete note
+        function deleteNote(id) {
+            if (!confirm('Delete this observation?')) return;
+            
+            const notes = loadNotes().filter(n => n.id !== id);
+            saveNotes(notes);
+            renderNotes();
+        }
+
+        // Copy note as text
+        function copyNote(id) {
+            const notes = loadNotes();
+            const note = notes.find(n => n.id === id);
+            if (!note) return;
+
+            const text = `# ${note.title}
+**Timestamp:** ${note.timestamp}
+**Domain:** ${note.domain}
+**Source:** ${note.source || 'N/A'}
+
+## Observation (Standard Physics)
+${note.observation}
+
+## ΞĐ Framework Interpretation
+${note.interpretation}
+
+**Verification Hash:** ${note.hash}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Note copied to clipboard');
+            });
+        }
+
+        // Render notes
+        function renderNotes() {
+            const container = document.getElementById('notes-container');
+            const notes = loadNotes();
+
+            if (notes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔭</div>
+                        <p>No observations recorded yet.<br>Add your first timestamped note above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notes.map(note => `
+                <div class="note-card ${note.domain}">
+                    <div class="note-actions">
+                        <button class="note-action-btn" onclick="copyNote('${note.id}')" title="Copy">📋</button>
+                        <button class="note-action-btn" onclick="deleteNote('${note.id}')" title="Delete">🗑</button>
+                    </div>
+                    <div class="note-header">
+                        <div class="note-title">${escapeHtml(note.title)}</div>
+                        <div class="note-timestamp">${formatTimestamp(note.timestamp)}</div>
+                    </div>
+                    <div class="note-meta">
+                        <span class="note-tag tag-${note.domain}">${note.domain}</span>
+                    </div>
+                    <div class="note-observation">
+                        <h4>Observation (Standard Physics)</h4>
+                        <p>${escapeHtml(note.observation)}</p>
+                    </div>
+                    <div class="note-interpretation">
+                        <h4>ΞĐ Framework Interpretation</h4>
+                        <p>${escapeHtml(note.interpretation)}</p>
+                    </div>
+                    ${note.source ? `<div class="note-source">Source: <a href="${escapeHtml(note.source)}" target="_blank" rel="noopener">${escapeHtml(note.source)}</a></div>` : ''}
+                    <div class="note-hash">SHA-256: ${note.hash}</div>
+                </div>
+            `).join('');
+        }
+
+        // Format timestamp for display
+        function formatTimestamp(iso) {
+            const d = new Date(iso);
+            return d.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'short'
+            });
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Export as JSON
+        function exportJSON() {
+            const notes = loadNotes();
+            const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+            downloadBlob(blob, `dso-observations-${new Date().toISOString().split('T')[0]}.json`);
+        }
+
+        // Export as Markdown
+        function exportMarkdown() {
+            const notes = loadNotes();
+            
+            let md = `# ΞĐ Framework Observations\n\n`;
+            md += `Generated: ${new Date().toISOString()}\n\n`;
+            md += `---\n\n`;
+
+            notes.forEach((note, i) => {
+                md += `## ${i + 1}. ${note.title}\n\n`;
+                md += `**Timestamp:** \`${note.timestamp}\`  \n`;
+                md += `**Domain:** ${note.domain}  \n`;
+                if (note.source) md += `**Source:** ${note.source}  \n`;
+                md += `\n`;
+                md += `### Observation (Standard Physics)\n\n`;
+                md += `${note.observation}\n\n`;
+                md += `### ΞĐ Framework Interpretation\n\n`;
+                md += `${note.interpretation}\n\n`;
+                md += `**Verification Hash:** \`${note.hash}\`\n\n`;
+                md += `---\n\n`;
+            });
+
+            const blob = new Blob([md], { type: 'text/markdown' });
+            downloadBlob(blob, `dso-observations-${new Date().toISOString().split('T')[0]}.md`);
+        }
+
+        // Download blob helper
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Import notes
+        function importNotes(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (!Array.isArray(imported)) {
+                        throw new Error('Invalid format');
+                    }
+                    
+                    const existing = loadNotes();
+                    const existingIds = new Set(existing.map(n => n.id));
+                    const newNotes = imported.filter(n => !existingIds.has(n.id));
+                    
+                    const merged = [...newNotes, ...existing].sort((a, b) => 
+                        new Date(b.timestamp) - new Date(a.timestamp)
+                    );
+                    
+                    saveNotes(merged);
+                    renderNotes();
+                    
+                    alert(`Imported ${newNotes.length} new observations.`);
+                } catch (err) {
+                    alert('Failed to import: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // Initialize
+        renderNotes();
+    </script>
+</body>
+</html>
