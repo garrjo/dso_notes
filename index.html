@@ -3,484 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ΞĐ Framework Observer</title>
-    <style>
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-tertiary: #1a1a25;
-            --text-primary: #e8e8f0;
-            --text-secondary: #a0a0b0;
-            --accent-gold: #d4af37;
-            --accent-blue: #4a9eff;
-            --accent-green: #27ae60;
-            --accent-orange: #f39c12;
-            --border-color: #2a2a3a;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.05em;
-        }
-
-        h1 span {
-            color: var(--accent-gold);
-            font-weight: 600;
-        }
-
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-        }
-
-        .blockchain-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            margin-top: 0.75rem;
-            padding: 0.4rem 0.8rem;
-            background: rgba(247, 147, 26, 0.1);
-            border: 1px solid rgba(247, 147, 26, 0.3);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: #f7931a;
-        }
-
-        .new-note-section {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--accent-gold);
-            margin-bottom: 1rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.4rem;
-        }
-
-        input[type="text"], textarea, select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-
-        input[type="text"]:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background: var(--accent-gold);
-            color: var(--bg-primary);
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: #e8c34a;
-            transform: translateY(-1px);
-        }
-
-        .btn-bitcoin {
-            background: #f7931a;
-            color: white;
-        }
-
-        .btn-bitcoin:hover:not(:disabled) {
-            background: #e8850f;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: var(--border-color);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .notes-section {
-            margin-top: 2rem;
-        }
-
-        .notes-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .note-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .note-card.cosmic { border-left: 3px solid #9b59b6; }
-        .note-card.quantum { border-left: 3px solid #3498db; }
-        .note-card.terrestrial { border-left: 3px solid #27ae60; }
-        .note-card.theoretical { border-left: 3px solid #e67e22; }
-
-        .note-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            gap: 1rem;
-        }
-
-        .note-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .note-timestamp {
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.8rem;
-            color: var(--accent-gold);
-            background: var(--bg-tertiary);
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            white-space: nowrap;
-        }
-
-        .note-meta {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .note-tag {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.6rem;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .tag-cosmic { background: rgba(155, 89, 182, 0.2); color: #bb8fce; }
-        .tag-quantum { background: rgba(52, 152, 219, 0.2); color: #7fb3d5; }
-        .tag-terrestrial { background: rgba(39, 174, 96, 0.2); color: #7dcea0; }
-        .tag-theoretical { background: rgba(230, 126, 34, 0.2); color: #f0b27a; }
-
-        .blockchain-status {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .blockchain-status.pending {
-            background: rgba(243, 156, 18, 0.2);
-            color: #f39c12;
-        }
-
-        .blockchain-status.confirmed {
-            background: rgba(39, 174, 96, 0.2);
-            color: #27ae60;
-        }
-
-        .blockchain-status.none {
-            background: rgba(160, 160, 176, 0.2);
-            color: var(--text-secondary);
-        }
-
-        .note-observation {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .note-observation h4, .note-interpretation h4 {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .note-interpretation h4 {
-            color: var(--accent-gold);
-        }
-
-        .note-interpretation {
-            margin-bottom: 1rem;
-        }
-
-        .note-source {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-        }
-
-        .note-source a {
-            color: var(--accent-blue);
-            text-decoration: none;
-        }
-
-        .note-source a:hover {
-            text-decoration: underline;
-        }
-
-        .note-hash {
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 1rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid var(--border-color);
-            word-break: break-all;
-        }
-
-        .note-actions {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .note-action-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 0.25rem;
-            font-size: 0.9rem;
-            opacity: 0.6;
-            transition: opacity 0.2s;
-        }
-
-        .note-action-btn:hover {
-            opacity: 1;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-secondary);
-        }
-
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        .verification-info {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-        }
-
-        .verification-info h3 {
-            font-size: 1rem;
-            color: var(--accent-gold);
-            margin-bottom: 1rem;
-        }
-
-        .verification-info p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-        }
-
-        .verification-info code {
-            background: var(--bg-tertiary);
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-size: 0.85rem;
-        }
-
-        .verification-info a {
-            color: var(--accent-blue);
-            text-decoration: none;
-        }
-
-        .verification-info a:hover {
-            text-decoration: underline;
-        }
-
-        .export-section {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .status-message {
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .status-message.success {
-            background: rgba(39, 174, 96, 0.2);
-            border: 1px solid rgba(39, 174, 96, 0.3);
-            color: #7dcea0;
-        }
-
-        .status-message.error {
-            background: rgba(231, 76, 60, 0.2);
-            border: 1px solid rgba(231, 76, 60, 0.3);
-            color: #e74c3c;
-        }
-
-        .status-message.info {
-            background: rgba(52, 152, 219, 0.2);
-            border: 1px solid rgba(52, 152, 219, 0.3);
-            color: #7fb3d5;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border: 2px solid currentColor;
-            border-right-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.75s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .ots-download {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.75rem;
-            color: #f7931a;
-            cursor: pointer;
-            margin-left: 0.5rem;
-        }
-
-        .ots-download:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .note-header {
-                flex-direction: column;
-            }
-
-            .btn-group {
-                flex-direction: column;
-            }
-
-            .notes-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+    <title>ΞĐ Framework Observer - Notes</title>
+    <link rel="stylesheet" href="shared-styles.css">
 </head>
 <body>
     <div class="container">
@@ -492,7 +16,16 @@
             </div>
         </header>
 
-        <section class="new-note-section">
+        <nav>
+            <a href="index.html" class="active">Notes</a>
+            <a href="predictions.html">Predictions</a>
+            <a href="tables.html">Constants</a>
+            <a href="faq.html">FAQ</a>
+            <a href="visuals.html">Visuals</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+        <section class="content-section">
             <div class="section-title">New Observation</div>
             
             <div class="form-group">
@@ -533,216 +66,42 @@
                 <button class="btn btn-bitcoin" onclick="addNote(true)" id="timestampBtn">
                     <span>₿</span> Save + Blockchain Timestamp
                 </button>
-                <button class="btn btn-secondary" onclick="clearForm()">
-                    Clear
-                </button>
+                <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
             </div>
             <div id="statusMessage"></div>
         </section>
 
-        <section class="notes-section">
-            <div class="notes-header">
-                <div class="section-title">Recorded Observations</div>
-                <div class="btn-group">
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="section-title" style="margin-bottom: 0;">Recorded Observations</div>
+                <div class="btn-group" style="margin-top: 0;">
                     <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
                     <button class="btn btn-secondary" onclick="exportMarkdown()">Export MD</button>
                 </div>
             </div>
             
-            <div id="notes-container">
-                <div class="empty-state">
-                    <div class="empty-state-icon">🔭</div>
-                    <p>No observations recorded yet.<br>Add your first timestamped note above.</p>
-                </div>
-            </div>
+            <div id="notes-container"></div>
         </section>
 
-        <section class="verification-info">
-            <h3>Verification & Trust</h3>
-            <p><strong>Local Hash:</strong> Each note includes a SHA-256 hash of its content. This proves the content hasn't been modified since creation.</p>
-            <p><strong>Blockchain Timestamp:</strong> Notes timestamped via OpenTimestamps are anchored to the Bitcoin blockchain. This proves the note existed at a specific point in time, independently verifiable by anyone.</p>
-            <p><strong>How to verify:</strong> Download the <code>.ots</code> proof file and verify at <a href="https://opentimestamps.org/" target="_blank">opentimestamps.org</a> or with the <code>ots</code> CLI tool.</p>
-            <p><strong>Git commits:</strong> For additional verification, commit your exported JSON to a public Git repo. Git's commit hashes add another timestamp layer.</p>
-        </section>
-
-        <section class="export-section">
+        <section class="content-section" style="margin-top: 2rem;">
             <div class="section-title">Import Notes</div>
-            <div class="form-group">
-                <input type="file" id="importFile" accept=".json" onchange="importNotes(event)" style="margin-top: 0.5rem;">
-            </div>
+            <input type="file" id="importFile" accept=".json" onchange="handleImport(event)">
         </section>
-        <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #2a2a3a; text-align: center; color: #a0a0b0; font-size: 0.85rem;">
-            <div style="margin-bottom: 1rem;">
-                <strong style="color: #d4af37;">ΞĐ Framework References</strong>
+
+        <footer>
+            <div class="footer-title">ΞĐ Framework References</div>
+            <div class="footer-links">
+                <a href="https://doi.org/10.5281/zenodo.15058929" target="_blank">Deriving Planck's Constant</a>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">Full Framework Collection</a>
             </div>
-            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-bottom: 1rem;">
-                <a href="https://doi.org/10.5281/zenodo.15058929" target="_blank" style="color: #4a9eff; text-decoration: none;">Deriving Planck's Constant</a>
-                <a href="https://doi.org/10.5281/zenodo.15103857" target="_blank" style="color: #4a9eff; text-decoration: none;">Galaxy Rotation Validation</a>
-                <a href="https://zenodo.org/communities/dso-framework" target="_blank" style="color: #4a9eff; text-decoration: none;">Full Framework Collection</a>
-            </div>
-            <div style="font-size: 0.75rem; color: #666;">
-                Joe W. Garrett · VaultSync Solutions Inc. · 2026
-            </div>
-        </footer>        
+            <div class="footer-credit">Joseph W. Garret · VaultSync Solutions Inc. · 2025</div>
+        </footer>
     </div>
 
-    <!-- OpenTimestamps library -->
     <script src="https://unpkg.com/opentimestamps@0.4.9/dist/opentimestamps.min.js"></script>
-    
+    <script src="shared.js"></script>
     <script>
-        const STORAGE_KEY = 'dso_observer_notes';
-        const OTS_CALENDARS = [
-            'https://alice.btc.calendar.opentimestamps.org',
-            'https://bob.btc.calendar.opentimestamps.org',
-            'https://finney.calendar.eternitywall.com'
-        ];
-
-        function loadNotes() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            return stored ? JSON.parse(stored) : [];
-        }
-
-        function saveNotes(notes) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
-        }
-
-        async function generateHash(content) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(content);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        function showStatus(message, type = 'info') {
-            const el = document.getElementById('statusMessage');
-            el.className = `status-message ${type}`;
-            el.innerHTML = message;
-            el.style.display = 'block';
-        }
-
-        function hideStatus() {
-            document.getElementById('statusMessage').style.display = 'none';
-        }
-
-        function setButtonsDisabled(disabled) {
-            document.getElementById('saveBtn').disabled = disabled;
-            document.getElementById('timestampBtn').disabled = disabled;
-        }
-
-        async function submitToOpenTimestamps(hashBytes) {
-            // Create detached timestamp file from hash
-            const detached = OpenTimestamps.DetachedTimestampFile.fromHash(
-                new OpenTimestamps.Ops.OpSHA256(),
-                hashBytes
-            );
-            
-            // Submit to calendars
-            await OpenTimestamps.stamp(detached);
-            
-            // Serialize the proof
-            const otsProof = detached.serializeToBytes();
-            return otsProof;
-        }
-
-        async function addNote(withBlockchain = false) {
-            const title = document.getElementById('title').value.trim();
-            const domain = document.getElementById('domain').value;
-            const source = document.getElementById('source').value.trim();
-            const observation = document.getElementById('observation').value.trim();
-            const interpretation = document.getElementById('interpretation').value.trim();
-
-            if (!title || !observation || !interpretation) {
-                showStatus('Please fill in title, observation, and interpretation.', 'error');
-                return;
-            }
-
-            setButtonsDisabled(true);
-            hideStatus();
-
-            const timestamp = new Date().toISOString();
-            
-            const noteContent = {
-                title,
-                domain,
-                source,
-                observation,
-                interpretation,
-                timestamp
-            };
-
-            const contentString = JSON.stringify(noteContent);
-            const hash = await generateHash(contentString);
-            
-            // Convert hash to bytes for OTS
-            const hashBytes = new Uint8Array(hash.match(/.{2}/g).map(byte => parseInt(byte, 16)));
-
-            let otsProof = null;
-            let otsStatus = 'none';
-
-            if (withBlockchain) {
-                showStatus('<span class="spinner"></span> Submitting to OpenTimestamps calendars...', 'info');
-                
-                try {
-                    otsProof = await submitToOpenTimestamps(hashBytes);
-                    otsStatus = 'pending';
-                    showStatus('✓ Submitted to Bitcoin blockchain via OpenTimestamps. Confirmation pending (~1-2 hours for Bitcoin block inclusion).', 'success');
-                } catch (err) {
-                    console.error('OpenTimestamps error:', err);
-                    showStatus('⚠ Blockchain timestamp failed: ' + err.message + '. Note saved locally with hash only.', 'error');
-                }
-            }
-
-            const note = {
-                ...noteContent,
-                id: Date.now().toString(36) + Math.random().toString(36).substr(2),
-                hash,
-                otsProof: otsProof ? arrayToBase64(otsProof) : null,
-                otsStatus
-            };
-
-            const notes = loadNotes();
-            notes.unshift(note);
-            saveNotes(notes);
-
-            clearForm();
-            renderNotes();
-            setButtonsDisabled(false);
-
-            if (!withBlockchain) {
-                showStatus('✓ Note saved locally with SHA-256 hash.', 'success');
-            }
-
-            setTimeout(hideStatus, 5000);
-        }
-
-        function arrayToBase64(bytes) {
-            let binary = '';
-            for (let i = 0; i < bytes.length; i++) {
-                binary += String.fromCharCode(bytes[i]);
-            }
-            return btoa(binary);
-        }
-
-        function base64ToArray(base64) {
-            const binary = atob(base64);
-            const bytes = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) {
-                bytes[i] = binary.charCodeAt(i);
-            }
-            return bytes;
-        }
-
-        function downloadOtsProof(noteId) {
-            const notes = loadNotes();
-            const note = notes.find(n => n.id === noteId);
-            if (!note || !note.otsProof) return;
-
-            const bytes = base64ToArray(note.otsProof);
-            const blob = new Blob([bytes], { type: 'application/octet-stream' });
-            const filename = `dso-note-${note.id}.ots`;
-            downloadBlob(blob, filename);
-        }
+        const STORAGE_KEY = 'dso_notes';
 
         function clearForm() {
             document.getElementById('title').value = '';
@@ -751,41 +110,32 @@
             document.getElementById('interpretation').value = '';
         }
 
-        function deleteNote(id) {
-            if (!confirm('Delete this observation? The blockchain timestamp (if any) will remain on the Bitcoin blockchain but you will lose the local proof file.')) return;
-            
-            const notes = loadNotes().filter(n => n.id !== id);
-            saveNotes(notes);
-            renderNotes();
-        }
+        async function addNote(withBlockchain) {
+            const title = document.getElementById('title').value.trim();
+            const domain = document.getElementById('domain').value;
+            const source = document.getElementById('source').value.trim();
+            const observation = document.getElementById('observation').value.trim();
+            const interpretation = document.getElementById('interpretation').value.trim();
 
-        function copyNote(id) {
-            const notes = loadNotes();
-            const note = notes.find(n => n.id === id);
-            if (!note) return;
+            if (!title || !observation || !interpretation) {
+                showStatus('statusMessage', 'Please fill in title, observation, and interpretation.', 'error');
+                return;
+            }
 
-            const text = `# ${note.title}
-**Timestamp:** ${note.timestamp}
-**Domain:** ${note.domain}
-**Source:** ${note.source || 'N/A'}
-**Blockchain Status:** ${note.otsStatus === 'confirmed' ? 'Confirmed on Bitcoin' : note.otsStatus === 'pending' ? 'Pending confirmation' : 'Local only'}
+            document.getElementById('saveBtn').disabled = true;
+            document.getElementById('timestampBtn').disabled = true;
 
-## Observation (Standard Physics)
-${note.observation}
-
-## ΞĐ Framework Interpretation
-${note.interpretation}
-
-**SHA-256 Hash:** ${note.hash}`;
-
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Note copied to clipboard');
+            await saveItem(STORAGE_KEY, { title, domain, source, observation, interpretation }, withBlockchain, 'statusMessage', () => {
+                clearForm();
+                renderNotes();
+                document.getElementById('saveBtn').disabled = false;
+                document.getElementById('timestampBtn').disabled = false;
             });
         }
 
         function renderNotes() {
             const container = document.getElementById('notes-container');
-            const notes = loadNotes();
+            const notes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
             if (notes.length === 0) {
                 container.innerHTML = `
@@ -797,148 +147,85 @@ ${note.interpretation}
                 return;
             }
 
-            container.innerHTML = notes.map(note => {
-                let statusHtml = '';
-                if (note.otsStatus === 'pending') {
-                    statusHtml = `<span class="blockchain-status pending">₿ Pending</span>`;
-                } else if (note.otsStatus === 'confirmed') {
-                    statusHtml = `<span class="blockchain-status confirmed">₿ Confirmed</span>`;
-                } else {
-                    statusHtml = `<span class="blockchain-status none">Local only</span>`;
-                }
-
-                const otsDownload = note.otsProof 
-                    ? `<span class="ots-download" onclick="downloadOtsProof('${note.id}')">📥 .ots proof</span>`
-                    : '';
-
-                return `
-                <div class="note-card ${note.domain}">
-                    <div class="note-actions">
-                        <button class="note-action-btn" onclick="copyNote('${note.id}')" title="Copy">📋</button>
-                        <button class="note-action-btn" onclick="deleteNote('${note.id}')" title="Delete">🗑</button>
+            container.innerHTML = notes.map(note => `
+                <div class="card ${note.domain}">
+                    <div class="card-actions">
+                        <button class="card-action-btn" onclick="copyNote('${note.id}')" title="Copy">📋</button>
+                        <button class="card-action-btn" onclick="deleteNote('${note.id}')" title="Delete">🗑</button>
                     </div>
-                    <div class="note-header">
-                        <div class="note-title">${escapeHtml(note.title)}</div>
-                        <div class="note-timestamp">${formatTimestamp(note.timestamp)}</div>
+                    <div class="card-header">
+                        <div class="card-title">${escapeHtml(note.title)}</div>
+                        <div class="card-timestamp">${formatTimestamp(note.timestamp)}</div>
                     </div>
-                    <div class="note-meta">
-                        <span class="note-tag tag-${note.domain}">${note.domain}</span>
-                        ${statusHtml}
-                        ${otsDownload}
+                    <div class="card-meta">
+                        <span class="tag tag-${note.domain}">${note.domain}</span>
+                        ${renderBlockchainStatus(note.otsStatus, note.otsProof, note.id, STORAGE_KEY)}
                     </div>
-                    <div class="note-observation">
+                    <div class="card-content">
                         <h4>Observation (Standard Physics)</h4>
                         <p>${escapeHtml(note.observation)}</p>
-                    </div>
-                    <div class="note-interpretation">
-                        <h4>ΞĐ Framework Interpretation</h4>
+                        <h4 class="gold">ΞĐ Framework Interpretation</h4>
                         <p>${escapeHtml(note.interpretation)}</p>
                     </div>
-                    ${note.source ? `<div class="note-source">Source: <a href="${escapeHtml(note.source)}" target="_blank" rel="noopener">${truncateUrl(note.source)}</a></div>` : ''}
-                    <div class="note-hash">SHA-256: ${note.hash}</div>
+                    ${note.source ? `<div class="card-source">Source: <a href="${escapeHtml(note.source)}" target="_blank" rel="noopener">${truncateUrl(note.source)}</a></div>` : ''}
+                    <div class="card-hash">SHA-256: ${note.hash}</div>
                 </div>
-            `}).join('');
+            `).join('');
         }
 
-        function truncateUrl(url) {
-            if (url.length > 60) {
-                return url.substring(0, 57) + '...';
-            }
-            return url;
+        function copyNote(id) {
+            const notes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const note = notes.find(n => n.id === id);
+            if (!note) return;
+
+            const text = `# ${note.title}
+**Timestamp:** ${note.timestamp}
+**Domain:** ${note.domain}
+**Source:** ${note.source || 'N/A'}
+
+## Observation (Standard Physics)
+${note.observation}
+
+## ΞĐ Framework Interpretation
+${note.interpretation}
+
+**SHA-256 Hash:** ${note.hash}`;
+
+            navigator.clipboard.writeText(text).then(() => alert('Note copied to clipboard'));
         }
 
-        function formatTimestamp(iso) {
-            const d = new Date(iso);
-            return d.toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                timeZoneName: 'short'
-            });
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function deleteNote(id) {
+            deleteItem(STORAGE_KEY, id, renderNotes);
         }
 
         function exportJSON() {
-            const notes = loadNotes();
-            const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
-            downloadBlob(blob, `dso-observations-${new Date().toISOString().split('T')[0]}.json`);
+            exportToJSON(STORAGE_KEY, 'dso-notes');
         }
 
         function exportMarkdown() {
-            const notes = loadNotes();
+            const notes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            let md = `# ΞĐ Framework Observations\n\nGenerated: ${new Date().toISOString()}\n\n---\n\n`;
             
-            let md = `# ΞĐ Framework Observations\n\n`;
-            md += `Generated: ${new Date().toISOString()}\n\n`;
-            md += `---\n\n`;
-
             notes.forEach((note, i) => {
                 md += `## ${i + 1}. ${note.title}\n\n`;
                 md += `**Timestamp:** \`${note.timestamp}\`  \n`;
                 md += `**Domain:** ${note.domain}  \n`;
-                md += `**Blockchain:** ${note.otsStatus === 'confirmed' ? 'Confirmed on Bitcoin' : note.otsStatus === 'pending' ? 'Pending confirmation' : 'Local only'}  \n`;
                 if (note.source) md += `**Source:** ${note.source}  \n`;
-                md += `\n`;
-                md += `### Observation (Standard Physics)\n\n`;
-                md += `${note.observation}\n\n`;
-                md += `### ΞĐ Framework Interpretation\n\n`;
-                md += `${note.interpretation}\n\n`;
-                md += `**SHA-256 Hash:** \`${note.hash}\`\n\n`;
-                md += `---\n\n`;
+                md += `\n### Observation (Standard Physics)\n\n${note.observation}\n\n`;
+                md += `### ΞĐ Framework Interpretation\n\n${note.interpretation}\n\n`;
+                md += `**SHA-256 Hash:** \`${note.hash}\`\n\n---\n\n`;
             });
 
             const blob = new Blob([md], { type: 'text/markdown' });
-            downloadBlob(blob, `dso-observations-${new Date().toISOString().split('T')[0]}.md`);
+            downloadBlob(blob, `dso-notes-${new Date().toISOString().split('T')[0]}.md`);
         }
 
-        function downloadBlob(blob, filename) {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function importNotes(event) {
+        function handleImport(event) {
             const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (!Array.isArray(imported)) {
-                        throw new Error('Invalid format');
-                    }
-                    
-                    const existing = loadNotes();
-                    const existingIds = new Set(existing.map(n => n.id));
-                    const newNotes = imported.filter(n => !existingIds.has(n.id));
-                    
-                    const merged = [...newNotes, ...existing].sort((a, b) => 
-                        new Date(b.timestamp) - new Date(a.timestamp)
-                    );
-                    
-                    saveNotes(merged);
-                    renderNotes();
-                    
-                    alert(`Imported ${newNotes.length} new observations.`);
-                } catch (err) {
-                    alert('Failed to import: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
+            if (file) {
+                importFromJSON(STORAGE_KEY, file, renderNotes);
+                event.target.value = '';
+            }
         }
 
         // Initialize

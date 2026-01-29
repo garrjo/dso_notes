@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΞĐ Framework Observer - Visuals</title>
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        .visual-preview {
+            max-width: 100%;
+            max-height: 400px;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .visual-card .image-container {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .visual-card img {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 4px;
+        }
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 1rem;
+        }
+        .upload-area:hover {
+            border-color: var(--accent-gold);
+            background: var(--bg-tertiary);
+        }
+        .upload-area.dragover {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span>ΞĐ</span> Framework Observer</h1>
+            <p class="subtitle">Visual representations of DSO concepts</p>
+            <div class="blockchain-badge">
+                <span>₿</span> Bitcoin blockchain timestamping via OpenTimestamps
+            </div>
+        </header>
+
+        <nav>
+            <a href="index.html">Notes</a>
+            <a href="predictions.html">Predictions</a>
+            <a href="tables.html">Constants</a>
+            <a href="faq.html">FAQ</a>
+            <a href="visuals.html" class="active">Visuals</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+        <section class="content-section">
+            <div class="section-title">Add Visual / Diagram</div>
+            
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" placeholder="e.g., DSO Ontology Diagram">
+            </div>
+
+            <div class="form-group">
+                <label for="visualType">Type</label>
+                <select id="visualType">
+                    <option value="diagram">Conceptual Diagram</option>
+                    <option value="chart">Data Chart</option>
+                    <option value="equation">Equation Visualization</option>
+                    <option value="comparison">Comparison</option>
+                    <option value="process">Process Flow</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Image</label>
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageInput').click()">
+                    <div>📷 Click to upload or drag & drop</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">PNG, JPG, SVG, or GIF</div>
+                </div>
+                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+                <img id="imagePreview" alt="Preview">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" placeholder="What does this visual represent? How does it relate to the DSO framework?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="concepts">Key Concepts Illustrated</label>
+                <input type="text" id="concepts" placeholder="e.g., Energy as primitive, D·S·O triad, scale invariance">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addVisual(false)" id="saveBtn">
+                    <span>💾</span> Save Locally
+                </button>
+                <button class="btn btn-bitcoin" onclick="addVisual(true)" id="timestampBtn">
+                    <span>₿</span> Save + Blockchain Timestamp
+                </button>
+                <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+            <div id="statusMessage"></div>
+        </section>
+
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="section-title" style="margin-bottom: 0;">Visual Library</div>
+                <div class="btn-group" style="margin-top: 0;">
+                    <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
+                </div>
+            </div>
+            
+            <div id="visuals-container"></div>
+        </section>
+
+        <section class="content-section" style="margin-top: 2rem;">
+            <div class="section-title">Import Visuals</div>
+            <input type="file" id="importFile" accept=".json" onchange="handleImport(event)">
+        </section>
+
+        <footer>
+            <div class="footer-title">ΞĐ Framework References</div>
+            <div class="footer-links">
+                <a href="https://doi.org/10.5281/zenodo.15058929" target="_blank">Deriving Planck's Constant</a>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">Full Framework Collection</a>
+            </div>
+            <div class="footer-credit">Joseph W. Garret · VaultSync Solutions Inc. · 2025</div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/opentimestamps@0.4.9/dist/opentimestamps.min.js"></script>
+    <script src="shared.js"></script>
+    <script>
+        const STORAGE_KEY = 'dso_visuals';
+        let currentImageData = null;
+
+        // Drag and drop handling
+        const uploadArea = document.getElementById('uploadArea');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                processImage(files[0]);
+            }
+        });
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) processImage(file);
+        }
+
+        function processImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImageData = e.target.result;
+                const preview = document.getElementById('imagePreview');
+                preview.src = currentImageData;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearForm() {
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('concepts').value = '';
+            document.getElementById('imageInput').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            currentImageData = null;
+        }
+
+        async function addVisual(withBlockchain) {
+            const title = document.getElementById('title').value.trim();
+            const visualType = document.getElementById('visualType').value;
+            const description = document.getElementById('description').value.trim();
+            const concepts = document.getElementById('concepts').value.trim();
+
+            if (!title || !description) {
+                showStatus('statusMessage', 'Please fill in title and description.', 'error');
+                return;
+            }
+
+            if (!currentImageData) {
+                showStatus('statusMessage', 'Please upload an image.', 'error');
+                return;
+            }
+
+            document.getElementById('saveBtn').disabled = true;
+            document.getElementById('timestampBtn').disabled = true;
+
+            await saveItem(STORAGE_KEY, { 
+                title, visualType, description, concepts, imageData: currentImageData 
+            }, withBlockchain, 'statusMessage', () => {
+                clearForm();
+                renderVisuals();
+                document.getElementById('saveBtn').disabled = false;
+                document.getElementById('timestampBtn').disabled = false;
+            });
+        }
+
+        function renderVisuals() {
+            const container = document.getElementById('visuals-container');
+            const visuals = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+            if (visuals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🖼️</div>
+                        <p>No visuals uploaded yet.<br>Add diagrams, charts, and visualizations above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const typeLabels = {
+                diagram: 'Conceptual Diagram',
+                chart: 'Data Chart',
+                equation: 'Equation Visualization',
+                comparison: 'Comparison',
+                process: 'Process Flow',
+                other: 'Other'
+            };
+
+            container.innerHTML = visuals.map(v => `
+                <div class="card visual-card">
+                    <div class="card-actions">
+                        <button class="card-action-btn" onclick="deleteVisual('${v.id}')" title="Delete">🗑</button>
+                    </div>
+                    <div class="card-header">
+                        <div class="card-title">${escapeHtml(v.title)}</div>
+                        <div class="card-timestamp">${formatTimestamp(v.timestamp)}</div>
+                    </div>
+                    <div class="card-meta">
+                        <span class="tag tag-theoretical">${typeLabels[v.visualType] || v.visualType}</span>
+                        ${renderBlockchainStatus(v.otsStatus, v.otsProof, v.id, STORAGE_KEY)}
+                    </div>
+                    <div class="image-container">
+                        <img src="${v.imageData}" alt="${escapeHtml(v.title)}">
+                    </div>
+                    <div class="card-content">
+                        <p>${escapeHtml(v.description)}</p>
+                        ${v.concepts ? `<div style="margin-top: 1rem;"><strong style="color: var(--accent-gold);">Key concepts:</strong> ${escapeHtml(v.concepts)}</div>` : ''}
+                    </div>
+                    <div class="card-hash">SHA-256: ${v.hash}</div>
+                </div>
+            `).join('');
+        }
+
+        function deleteVisual(id) {
+            deleteItem(STORAGE_KEY, id, renderVisuals);
+        }
+
+        function exportJSON() {
+            exportToJSON(STORAGE_KEY, 'dso-visuals');
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (file) {
+                importFromJSON(STORAGE_KEY, file, renderVisuals);
+                event.target.value = '';
+            }
+        }
+
+        // Initialize
+        renderVisuals();
+    </script>
+</body>
+</html>

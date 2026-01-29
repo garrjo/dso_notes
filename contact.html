@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΞĐ Framework Observer - Contact</title>
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        .contact-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .contact-card h3 {
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+        .contact-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        .contact-card a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        .contact-card a:hover {
+            text-decoration: underline;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .framework-summary {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .framework-summary h2 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        .framework-summary p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        .framework-summary ul {
+            list-style: none;
+            padding: 0;
+        }
+        .framework-summary li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+        .framework-summary li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+        }
+        .equation-highlight {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        .equation-highlight .equation {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            font-family: 'Times New Roman', serif;
+            margin-bottom: 0.5rem;
+        }
+        .equation-highlight .label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .pub-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .pub-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        .pub-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+        .pub-card a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .pub-card a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span>ΞĐ</span> Framework Observer</h1>
+            <p class="subtitle">Connect with the DSO Framework project</p>
+            <div class="blockchain-badge">
+                <span>₿</span> Bitcoin blockchain timestamping via OpenTimestamps
+            </div>
+        </header>
+
+        <nav>
+            <a href="index.html">Notes</a>
+            <a href="predictions.html">Predictions</a>
+            <a href="tables.html">Constants</a>
+            <a href="faq.html">FAQ</a>
+            <a href="visuals.html">Visuals</a>
+            <a href="contact.html" class="active">Contact</a>
+        </nav>
+
+        <section class="framework-summary">
+            <h2>About the ΞĐ (Seeth) Framework</h2>
+            <p>
+                The DSO framework proposes Energy as the sole ontological primitive from which all physical phenomena emerge. 
+                Rather than treating spacetime, particles, and forces as fundamental, DSO derives them from the geometric 
+                structure of Energy expressed through Density (D), Spin/Structure (S), and Orientation (O).
+            </p>
+            
+            <div class="equation-highlight">
+                <div class="equation">αΩ = D · Ω · O</div>
+                <div class="label">Core equation of the DSO framework — literally spells ΘΕΟΣ (Theos, "God" in Greek)</div>
+            </div>
+
+            <p>Key claims:</p>
+            <ul>
+                <li>Fundamental constants (ℏ, G, c) are derivable from geometric first principles</li>
+                <li>Galaxy rotation curves emerge without dark matter</li>
+                <li>Scale-invariance from Planck to cosmic scales</li>
+                <li>Structural explanation replaces mechanistic causation</li>
+                <li>Zero free parameters — all values derived from geometry</li>
+                <li>98.6% agreement with CMB measurements across 175 SPARC galaxies</li>
+            </ul>
+        </section>
+
+        <div class="contact-grid">
+            <div class="contact-card">
+                <h3>📧 Email</h3>
+                <p>For academic inquiries, collaboration, or questions</p>
+                <a href="mailto:joe@vaultsync.solutions">joe@vaultsync.solutions</a>
+            </div>
+
+            <div class="contact-card">
+                <h3>🏢 Organization</h3>
+                <p>VaultSync Solutions Inc.</p>
+                <a href="https://vaultsync.solutions" target="_blank">vaultsync.solutions</a>
+            </div>
+
+            <div class="contact-card">
+                <h3>📚 Publications</h3>
+                <p>Full framework papers and derivations</p>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">Zenodo Community</a>
+            </div>
+
+            <div class="contact-card">
+                <h3>💻 Source</h3>
+                <p>This observation tool and related code</p>
+                <a href="https://github.com/garrjo/dso_notes" target="_blank">GitHub Repository</a>
+            </div>
+        </div>
+
+        <section class="content-section">
+            <div class="section-title">Key Publications</div>
+            
+            <div class="pub-card">
+                <h4>Deriving Planck's Constant from Geometric First Principles</h4>
+                <p>Demonstrates that ℏ emerges necessarily from DSO geometry (ΞĐ₀ = 6.626×10⁻³⁴), matching the measured value without parameter fitting.</p>
+                <a href="https://doi.org/10.5281/zenodo.15058929" target="_blank">DOI: 10.5281/zenodo.15058929</a>
+            </div>
+
+            <div class="pub-card">
+                <h4>DSO Framework Validation: Galaxy Rotation Curves</h4>
+                <p>Validation against 175 SPARC galaxies showing rotation curves emerge from density-structure relationships without dark matter halos.</p>
+                <a href="https://doi.org/10.5281/zenodo.15103857" target="_blank">DOI: 10.5281/zenodo.15103857</a>
+            </div>
+
+            <div class="pub-card">
+                <h4>The Epistemic Foundation of the DSO Framework</h4>
+                <p>Explicit statement of the framework's ontological commitments: what DSO assumes, what it refuses to assume, and what counts as valid explanation.</p>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">View on Zenodo</a>
+            </div>
+
+            <div class="pub-card">
+                <h4>Recognition Conditions for Novel Foundational Frameworks</h4>
+                <p>A vertical orientation paper on evaluating frameworks that invert standard primitives — how to recognize paradigm-level alternatives.</p>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">View on Zenodo</a>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-title">About the Author</div>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                <strong style="color: var(--text-primary);">Joseph W. Garret</strong> is a systems architect with 25+ years of experience 
+                building data-driven applications across federal, healthcare, and private sectors. The DSO framework emerged from 
+                pattern recognition across scales — the same structural relationships appearing in database optimization, 
+                neural architectures, and cosmological data.
+            </p>
+            <p style="color: var(--text-secondary);">
+                Currently Infrastructure Coordinator at the Arkansas State Medical Board and CEO of VaultSync Solutions Inc., 
+                with prior federal service as GS-13 Information Technology Technical Specialist at the Small Business Administration.
+                Air Force veteran. Based in Arkansas.
+            </p>
+        </section>
+
+        <footer>
+            <div class="footer-title">ΞĐ Framework References</div>
+            <div class="footer-links">
+                <a href="https://doi.org/10.5281/zenodo.15058929" target="_blank">Deriving Planck's Constant</a>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">Full Framework Collection</a>
+            </div>
+            <div class="footer-credit">Joseph W. Garret · VaultSync Solutions Inc. · 2025</div>
+        </footer>
+    </div>
+</body>
+</html>

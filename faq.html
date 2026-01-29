@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΞĐ Framework Observer - FAQ</title>
+    <link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span>ΞĐ</span> Framework Observer</h1>
+            <p class="subtitle">Common questions and objections addressed</p>
+            <div class="blockchain-badge">
+                <span>₿</span> Bitcoin blockchain timestamping via OpenTimestamps
+            </div>
+        </header>
+
+        <nav>
+            <a href="index.html">Notes</a>
+            <a href="predictions.html">Predictions</a>
+            <a href="tables.html">Constants</a>
+            <a href="faq.html" class="active">FAQ</a>
+            <a href="visuals.html">Visuals</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+        <section class="content-section">
+            <div class="section-title">Add FAQ Entry</div>
+            
+            <div class="form-group">
+                <label for="question">Question / Objection</label>
+                <input type="text" id="question" placeholder="e.g., How is this different from MOND?">
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category">
+                    <option value="methodology">Methodology</option>
+                    <option value="comparison">Comparison to Other Theories</option>
+                    <option value="evidence">Evidence & Validation</option>
+                    <option value="interpretation">Interpretation</option>
+                    <option value="technical">Technical Details</option>
+                    <option value="general">General</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="answer">Response</label>
+                <textarea id="answer" placeholder="Clear, direct answer to the question or objection..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="references">Supporting References (optional)</label>
+                <input type="text" id="references" placeholder="DOIs, paper titles, or links that support this response">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addFAQ(false)" id="saveBtn">
+                    <span>💾</span> Save Locally
+                </button>
+                <button class="btn btn-bitcoin" onclick="addFAQ(true)" id="timestampBtn">
+                    <span>₿</span> Save + Blockchain Timestamp
+                </button>
+                <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+            <div id="statusMessage"></div>
+        </section>
+
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="section-title" style="margin-bottom: 0;">Frequently Asked Questions</div>
+                <div class="btn-group" style="margin-top: 0;">
+                    <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
+                </div>
+            </div>
+            
+            <div id="faq-container"></div>
+        </section>
+
+        <section class="content-section" style="margin-top: 2rem;">
+            <div class="section-title">Import FAQ</div>
+            <input type="file" id="importFile" accept=".json" onchange="handleImport(event)">
+        </section>
+
+        <footer>
+            <div class="footer-title">ΞĐ Framework References</div>
+            <div class="footer-links">
+                <a href="https://doi.org/10.5281/zenodo.15058929" target="_blank">Deriving Planck's Constant</a>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">Full Framework Collection</a>
+            </div>
+            <div class="footer-credit">Joseph W. Garret · VaultSync Solutions Inc. · 2025</div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/opentimestamps@0.4.9/dist/opentimestamps.min.js"></script>
+    <script src="shared.js"></script>
+    <script>
+        const STORAGE_KEY = 'dso_faq';
+
+        function clearForm() {
+            document.getElementById('question').value = '';
+            document.getElementById('answer').value = '';
+            document.getElementById('references').value = '';
+        }
+
+        async function addFAQ(withBlockchain) {
+            const question = document.getElementById('question').value.trim();
+            const category = document.getElementById('category').value;
+            const answer = document.getElementById('answer').value.trim();
+            const references = document.getElementById('references').value.trim();
+
+            if (!question || !answer) {
+                showStatus('statusMessage', 'Please fill in both question and answer.', 'error');
+                return;
+            }
+
+            document.getElementById('saveBtn').disabled = true;
+            document.getElementById('timestampBtn').disabled = true;
+
+            await saveItem(STORAGE_KEY, { 
+                question, category, answer, references 
+            }, withBlockchain, 'statusMessage', () => {
+                clearForm();
+                renderFAQ();
+                document.getElementById('saveBtn').disabled = false;
+                document.getElementById('timestampBtn').disabled = false;
+            });
+        }
+
+        function renderFAQ() {
+            const container = document.getElementById('faq-container');
+            const faqs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+            if (faqs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❓</div>
+                        <p>No FAQ entries yet.<br>Add common questions and objections above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by category
+            const grouped = {};
+            faqs.forEach(faq => {
+                if (!grouped[faq.category]) grouped[faq.category] = [];
+                grouped[faq.category].push(faq);
+            });
+
+            const categoryLabels = {
+                methodology: 'Methodology',
+                comparison: 'Comparison to Other Theories',
+                evidence: 'Evidence & Validation',
+                interpretation: 'Interpretation',
+                technical: 'Technical Details',
+                general: 'General'
+            };
+
+            let html = '';
+            for (const [cat, items] of Object.entries(grouped)) {
+                html += `<h3 style="color: var(--accent-gold); margin: 1.5rem 0 1rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">${categoryLabels[cat] || cat}</h3>`;
+                
+                items.forEach(faq => {
+                    html += `
+                        <div class="card" style="cursor: pointer;" onclick="toggleFAQ(this)">
+                            <div class="card-actions">
+                                <button class="card-action-btn" onclick="event.stopPropagation(); deleteFAQ('${faq.id}')" title="Delete">🗑</button>
+                            </div>
+                            <div class="card-header" style="margin-bottom: 0;">
+                                <div class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span class="faq-toggle">+</span>
+                                    ${escapeHtml(faq.question)}
+                                </div>
+                                <div class="card-meta" style="margin-bottom: 0;">
+                                    ${renderBlockchainStatus(faq.otsStatus, faq.otsProof, faq.id, STORAGE_KEY)}
+                                </div>
+                            </div>
+                            <div class="faq-answer-content" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                                <p style="color: var(--text-secondary);">${escapeHtml(faq.answer)}</p>
+                                ${faq.references ? `<div class="card-source" style="margin-top: 1rem;">References: ${escapeHtml(faq.references)}</div>` : ''}
+                                <div class="card-hash">SHA-256: ${faq.hash}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                    Timestamped: ${formatTimestamp(faq.timestamp)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
+        function toggleFAQ(element) {
+            const answer = element.querySelector('.faq-answer-content');
+            const toggle = element.querySelector('.faq-toggle');
+            
+            if (answer.style.display === 'none') {
+                answer.style.display = 'block';
+                toggle.textContent = '−';
+            } else {
+                answer.style.display = 'none';
+                toggle.textContent = '+';
+            }
+        }
+
+        function deleteFAQ(id) {
+            deleteItem(STORAGE_KEY, id, renderFAQ);
+        }
+
+        function exportJSON() {
+            exportToJSON(STORAGE_KEY, 'dso-faq');
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (file) {
+                importFromJSON(STORAGE_KEY, file, renderFAQ);
+                event.target.value = '';
+            }
+        }
+
+        // Initialize
+        renderFAQ();
+    </script>
+</body>
+</html>

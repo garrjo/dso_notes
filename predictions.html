@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΞĐ Framework Observer - Predictions</title>
+    <link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span>ΞĐ</span> Framework Observer</h1>
+            <p class="subtitle">Falsifiable predictions from the DSO framework</p>
+            <div class="blockchain-badge">
+                <span>₿</span> Bitcoin blockchain timestamping via OpenTimestamps
+            </div>
+        </header>
+
+        <nav>
+            <a href="index.html">Notes</a>
+            <a href="predictions.html" class="active">Predictions</a>
+            <a href="tables.html">Constants</a>
+            <a href="faq.html">FAQ</a>
+            <a href="visuals.html">Visuals</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+        <section class="content-section">
+            <div class="section-title">New Prediction</div>
+            
+            <div class="form-group">
+                <label for="title">Prediction Title</label>
+                <input type="text" id="title" placeholder="e.g., Galaxy rotation curve for NGC 1234">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="domain">Domain</label>
+                    <select id="domain">
+                        <option value="cosmic">Cosmic Scale</option>
+                        <option value="quantum">Quantum Scale</option>
+                        <option value="terrestrial">Terrestrial Scale</option>
+                        <option value="theoretical">Theoretical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="pending">Pending Observation</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="refuted">Refuted</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="prediction">Specific Prediction</label>
+                <textarea id="prediction" placeholder="What specifically does DSO predict? Include quantitative values where possible..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="derivation">Derivation from DSO</label>
+                <textarea id="derivation" placeholder="How does this prediction follow from the framework? Reference specific equations or principles..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="testMethod">How to Test</label>
+                <textarea id="testMethod" placeholder="What observation or experiment would confirm/refute this prediction?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="standardPrediction">Standard Model Prediction (if different)</label>
+                <input type="text" id="standardPrediction" placeholder="What does standard physics predict for comparison?">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addPrediction(false)" id="saveBtn">
+                    <span>💾</span> Save Locally
+                </button>
+                <button class="btn btn-bitcoin" onclick="addPrediction(true)" id="timestampBtn">
+                    <span>₿</span> Save + Blockchain Timestamp
+                </button>
+                <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+            <div id="statusMessage"></div>
+        </section>
+
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="section-title" style="margin-bottom: 0;">Recorded Predictions</div>
+                <div class="btn-group" style="margin-top: 0;">
+                    <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
+                </div>
+            </div>
+            
+            <div id="predictions-container"></div>
+        </section>
+
+        <section class="content-section" style="margin-top: 2rem;">
+            <div class="section-title">Import Predictions</div>
+            <input type="file" id="importFile" accept=".json" onchange="handleImport(event)">
+        </section>
+
+        <footer>
+            <div class="footer-title">ΞĐ Framework References</div>
+            <div class="footer-links">
+                <a href="https://doi.org/10.5281/zenodo.15058929" target="_blank">Deriving Planck's Constant</a>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">Full Framework Collection</a>
+            </div>
+            <div class="footer-credit">Joseph W. Garret · VaultSync Solutions Inc. · 2025</div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/opentimestamps@0.4.9/dist/opentimestamps.min.js"></script>
+    <script src="shared.js"></script>
+    <script>
+        const STORAGE_KEY = 'dso_predictions';
+
+        function clearForm() {
+            document.getElementById('title').value = '';
+            document.getElementById('prediction').value = '';
+            document.getElementById('derivation').value = '';
+            document.getElementById('testMethod').value = '';
+            document.getElementById('standardPrediction').value = '';
+        }
+
+        async function addPrediction(withBlockchain) {
+            const title = document.getElementById('title').value.trim();
+            const domain = document.getElementById('domain').value;
+            const predictionStatus = document.getElementById('status').value;
+            const prediction = document.getElementById('prediction').value.trim();
+            const derivation = document.getElementById('derivation').value.trim();
+            const testMethod = document.getElementById('testMethod').value.trim();
+            const standardPrediction = document.getElementById('standardPrediction').value.trim();
+
+            if (!title || !prediction || !derivation) {
+                showStatus('statusMessage', 'Please fill in title, prediction, and derivation.', 'error');
+                return;
+            }
+
+            document.getElementById('saveBtn').disabled = true;
+            document.getElementById('timestampBtn').disabled = true;
+
+            await saveItem(STORAGE_KEY, { 
+                title, domain, predictionStatus, prediction, derivation, testMethod, standardPrediction 
+            }, withBlockchain, 'statusMessage', () => {
+                clearForm();
+                renderPredictions();
+                document.getElementById('saveBtn').disabled = false;
+                document.getElementById('timestampBtn').disabled = false;
+            });
+        }
+
+        function renderPredictions() {
+            const container = document.getElementById('predictions-container');
+            const predictions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+            if (predictions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔮</div>
+                        <p>No predictions recorded yet.<br>Add your first falsifiable prediction above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = predictions.map(p => `
+                <div class="card ${p.predictionStatus}">
+                    <div class="card-actions">
+                        <button class="card-action-btn" onclick="deletePrediction('${p.id}')" title="Delete">🗑</button>
+                    </div>
+                    <div class="card-header">
+                        <div class="card-title">${escapeHtml(p.title)}</div>
+                        <div class="card-timestamp">${formatTimestamp(p.timestamp)}</div>
+                    </div>
+                    <div class="card-meta">
+                        <span class="tag tag-${p.domain}">${p.domain}</span>
+                        <span class="tag tag-${p.predictionStatus}">${p.predictionStatus}</span>
+                        ${renderBlockchainStatus(p.otsStatus, p.otsProof, p.id, STORAGE_KEY)}
+                    </div>
+                    <div class="card-content">
+                        <h4 class="gold">DSO Prediction</h4>
+                        <p>${escapeHtml(p.prediction)}</p>
+                        <h4>Derivation</h4>
+                        <p>${escapeHtml(p.derivation)}</p>
+                        ${p.testMethod ? `<h4>How to Test</h4><p>${escapeHtml(p.testMethod)}</p>` : ''}
+                        ${p.standardPrediction ? `<h4>Standard Model Predicts</h4><p>${escapeHtml(p.standardPrediction)}</p>` : ''}
+                    </div>
+                    <div class="card-hash">SHA-256: ${p.hash}</div>
+                </div>
+            `).join('');
+        }
+
+        function deletePrediction(id) {
+            deleteItem(STORAGE_KEY, id, renderPredictions);
+        }
+
+        function exportJSON() {
+            exportToJSON(STORAGE_KEY, 'dso-predictions');
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (file) {
+                importFromJSON(STORAGE_KEY, file, renderPredictions);
+                event.target.value = '';
+            }
+        }
+
+        // Initialize
+        renderPredictions();
+    </script>
+</body>
+</html>

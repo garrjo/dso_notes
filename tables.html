@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΞĐ Framework Observer - Constants</title>
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        .constant-card .values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+        .constant-card .value-item {
+            text-align: center;
+        }
+        .constant-card .value-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+        .constant-card .value-number {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        .constant-card .value-number.derived {
+            color: var(--accent-gold);
+        }
+        .constant-card .value-number.measured {
+            color: var(--accent-blue);
+        }
+        .constant-card .difference {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 4px;
+            text-align: center;
+        }
+        .constant-card .difference.excellent {
+            background: rgba(39, 174, 96, 0.2);
+            color: var(--accent-green);
+        }
+        .constant-card .difference.good {
+            background: rgba(243, 156, 18, 0.2);
+            color: var(--accent-orange);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span>ΞĐ</span> Framework Observer</h1>
+            <p class="subtitle">Fundamental constants derived from DSO geometry</p>
+            <div class="blockchain-badge">
+                <span>₿</span> Bitcoin blockchain timestamping via OpenTimestamps
+            </div>
+        </header>
+
+        <nav>
+            <a href="index.html">Notes</a>
+            <a href="predictions.html">Predictions</a>
+            <a href="tables.html" class="active">Constants</a>
+            <a href="faq.html">FAQ</a>
+            <a href="visuals.html">Visuals</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+        <section class="content-section">
+            <div class="section-title">Add Derived Constant</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="constantName">Constant Name</label>
+                    <input type="text" id="constantName" placeholder="e.g., Planck's Constant (ℏ)">
+                </div>
+                <div class="form-group">
+                    <label for="symbol">Symbol</label>
+                    <input type="text" id="symbol" placeholder="e.g., ℏ, G, c, α">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="derivedValue">DSO Derived Value</label>
+                    <input type="text" id="derivedValue" placeholder="e.g., 6.62607015×10⁻³⁴">
+                </div>
+                <div class="form-group">
+                    <label for="measuredValue">Measured Value (CODATA/PDG)</label>
+                    <input type="text" id="measuredValue" placeholder="e.g., 6.62607015×10⁻³⁴">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="units">Units</label>
+                <input type="text" id="units" placeholder="e.g., J·s, m/s, m³/(kg·s²)">
+            </div>
+
+            <div class="form-group">
+                <label for="derivationMethod">Derivation Method</label>
+                <textarea id="derivationMethod" placeholder="How is this constant derived from DSO? Reference equations, geometric principles..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="significance">Significance</label>
+                <textarea id="significance" placeholder="Why is this derivation important? What does it demonstrate about the framework?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="doiReference">DOI Reference (paper with full derivation)</label>
+                <input type="text" id="doiReference" placeholder="e.g., 10.5281/zenodo.15058929">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addConstant(false)" id="saveBtn">
+                    <span>💾</span> Save Locally
+                </button>
+                <button class="btn btn-bitcoin" onclick="addConstant(true)" id="timestampBtn">
+                    <span>₿</span> Save + Blockchain Timestamp
+                </button>
+                <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+            <div id="statusMessage"></div>
+        </section>
+
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="section-title" style="margin-bottom: 0;">Derived Constants Table</div>
+                <div class="btn-group" style="margin-top: 0;">
+                    <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
+                </div>
+            </div>
+            
+            <div id="constants-container"></div>
+        </section>
+
+        <section class="content-section" style="margin-top: 2rem;">
+            <div class="section-title">Import Constants</div>
+            <input type="file" id="importFile" accept=".json" onchange="handleImport(event)">
+        </section>
+
+        <footer>
+            <div class="footer-title">ΞĐ Framework References</div>
+            <div class="footer-links">
+                <a href="https://doi.org/10.5281/zenodo.15058929" target="_blank">Deriving Planck's Constant</a>
+                <a href="https://zenodo.org/communities/dso-framework" target="_blank">Full Framework Collection</a>
+            </div>
+            <div class="footer-credit">Joseph W. Garret · VaultSync Solutions Inc. · 2025</div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/opentimestamps@0.4.9/dist/opentimestamps.min.js"></script>
+    <script src="shared.js"></script>
+    <script>
+        const STORAGE_KEY = 'dso_constants';
+
+        function clearForm() {
+            document.getElementById('constantName').value = '';
+            document.getElementById('symbol').value = '';
+            document.getElementById('derivedValue').value = '';
+            document.getElementById('measuredValue').value = '';
+            document.getElementById('units').value = '';
+            document.getElementById('derivationMethod').value = '';
+            document.getElementById('significance').value = '';
+            document.getElementById('doiReference').value = '';
+        }
+
+        async function addConstant(withBlockchain) {
+            const constantName = document.getElementById('constantName').value.trim();
+            const symbol = document.getElementById('symbol').value.trim();
+            const derivedValue = document.getElementById('derivedValue').value.trim();
+            const measuredValue = document.getElementById('measuredValue').value.trim();
+            const units = document.getElementById('units').value.trim();
+            const derivationMethod = document.getElementById('derivationMethod').value.trim();
+            const significance = document.getElementById('significance').value.trim();
+            const doiReference = document.getElementById('doiReference').value.trim();
+
+            if (!constantName || !derivedValue || !derivationMethod) {
+                showStatus('statusMessage', 'Please fill in constant name, derived value, and derivation method.', 'error');
+                return;
+            }
+
+            document.getElementById('saveBtn').disabled = true;
+            document.getElementById('timestampBtn').disabled = true;
+
+            await saveItem(STORAGE_KEY, { 
+                constantName, symbol, derivedValue, measuredValue, units, 
+                derivationMethod, significance, doiReference 
+            }, withBlockchain, 'statusMessage', () => {
+                clearForm();
+                renderConstants();
+                document.getElementById('saveBtn').disabled = false;
+                document.getElementById('timestampBtn').disabled = false;
+            });
+        }
+
+        function renderConstants() {
+            const container = document.getElementById('constants-container');
+            const constants = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+            if (constants.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📐</div>
+                        <p>No derived constants recorded yet.<br>Add your first constant derivation above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = constants.map(c => `
+                <div class="card constant-card">
+                    <div class="card-actions">
+                        <button class="card-action-btn" onclick="deleteConstant('${c.id}')" title="Delete">🗑</button>
+                    </div>
+                    <div class="card-header">
+                        <div class="card-title">${escapeHtml(c.constantName)} ${c.symbol ? `(${escapeHtml(c.symbol)})` : ''}</div>
+                        <div class="card-timestamp">${formatTimestamp(c.timestamp)}</div>
+                    </div>
+                    <div class="card-meta">
+                        ${renderBlockchainStatus(c.otsStatus, c.otsProof, c.id, STORAGE_KEY)}
+                    </div>
+                    <div class="values">
+                        <div class="value-item">
+                            <div class="value-label">DSO Derived</div>
+                            <div class="value-number derived">${escapeHtml(c.derivedValue)}</div>
+                        </div>
+                        ${c.measuredValue ? `
+                        <div class="value-item">
+                            <div class="value-label">Measured</div>
+                            <div class="value-number measured">${escapeHtml(c.measuredValue)}</div>
+                        </div>
+                        ` : ''}
+                        ${c.units ? `
+                        <div class="value-item">
+                            <div class="value-label">Units</div>
+                            <div class="value-number">${escapeHtml(c.units)}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="card-content">
+                        <h4 class="gold">Derivation Method</h4>
+                        <p>${escapeHtml(c.derivationMethod)}</p>
+                        ${c.significance ? `<h4>Significance</h4><p>${escapeHtml(c.significance)}</p>` : ''}
+                        ${c.doiReference ? `<div class="card-source">Full derivation: <a href="https://doi.org/${escapeHtml(c.doiReference)}" target="_blank">DOI: ${escapeHtml(c.doiReference)}</a></div>` : ''}
+                    </div>
+                    <div class="card-hash">SHA-256: ${c.hash}</div>
+                </div>
+            `).join('');
+        }
+
+        function deleteConstant(id) {
+            deleteItem(STORAGE_KEY, id, renderConstants);
+        }
+
+        function exportJSON() {
+            exportToJSON(STORAGE_KEY, 'dso-constants');
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (file) {
+                importFromJSON(STORAGE_KEY, file, renderConstants);
+                event.target.value = '';
+            }
+        }
+
+        // Initialize
+        renderConstants();
+    </script>
+</body>
+</html>
