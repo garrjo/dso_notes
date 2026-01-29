@@ -80,8 +80,24 @@
 
         <section class="content-section" style="margin-top: 2rem;">
             <div class="section-title">Import FAQ</div>
-            <input type="file" id="importFile" accept=".json" onchange="handleImport(event)">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Select a JSON file to import FAQ entries.</p>
+            <input type="file" id="importFile" accept=".json" style="display: none;">
+            <input type="file" id="importFileTimestamp" accept=".json" style="display: none;">
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                    📥 Import (Local Only)
+                </button>
+                <button class="btn btn-bitcoin" onclick="document.getElementById('importFileTimestamp').click()">
+                    ₿ Import + Timestamp All
+                </button>
+            </div>
+            <div id="importStatus" style="display: none;"></div>
         </section>
+
+        <script>
+            document.getElementById('importFile').addEventListener('change', (e) => handleImport(e, false));
+            document.getElementById('importFileTimestamp').addEventListener('change', (e) => handleImport(e, true));
+        </script>
 
         <footer>
             <div class="footer-title">ΞĐ Framework References</div>
@@ -214,12 +230,99 @@
             exportToJSON(STORAGE_KEY, 'dso-faq');
         }
 
-        function handleImport(event) {
+        function handleImport(event, withTimestamp = false) {
             const file = event.target.files[0];
-            if (file) {
+            if (!file) return;
+            
+            if (withTimestamp) {
+                importAndTimestamp(file);
+            } else {
                 importFromJSON(STORAGE_KEY, file, renderFAQ);
-                event.target.value = '';
             }
+            event.target.value = '';
+        }
+
+        async function importAndTimestamp(file) {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (!Array.isArray(imported)) {
+                        throw new Error('Invalid format');
+                    }
+                    
+                    const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                    const existingIds = new Set(existing.map(n => n.id));
+                    const newItems = imported.filter(n => !existingIds.has(n.id));
+                    
+                    if (newItems.length === 0) {
+                        alert('No new items to import.');
+                        return;
+                    }
+                    
+                    showStatus('importStatus', `<span class="spinner"></span> Timestamping ${newItems.length} items... This may take a moment.`, 'info');
+                    
+                    let successCount = 0;
+                    let failCount = 0;
+                    
+                    for (let i = 0; i < newItems.length; i++) {
+                        const item = newItems[i];
+                        showStatus('importStatus', `<span class="spinner"></span> Timestamping ${i + 1}/${newItems.length}: ${item.question.substring(0, 40)}...`, 'info');
+                        
+                        try {
+                            const timestamp = new Date().toISOString();
+                            const contentWithTimestamp = { ...item, timestamp };
+                            const contentString = JSON.stringify(contentWithTimestamp);
+                            const hash = await generateHash(contentString);
+                            const hashBytes = new Uint8Array(hash.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+                            
+                            const otsProof = await submitToOpenTimestamps(hashBytes);
+                            
+                            item.timestamp = timestamp;
+                            item.hash = hash;
+                            item.otsProof = arrayToBase64(otsProof);
+                            item.otsStatus = 'pending';
+                            item.id = Date.now().toString(36) + Math.random().toString(36).substr(2);
+                            
+                            successCount++;
+                        } catch (err) {
+                            console.error('Timestamp failed for:', item.question, err);
+                            // Still import but without blockchain
+                            const timestamp = new Date().toISOString();
+                            const contentString = JSON.stringify({ ...item, timestamp });
+                            item.timestamp = timestamp;
+                            item.hash = await generateHash(contentString);
+                            item.otsProof = null;
+                            item.otsStatus = 'none';
+                            item.id = Date.now().toString(36) + Math.random().toString(36).substr(2);
+                            failCount++;
+                        }
+                        
+                        // Small delay to avoid hammering calendars
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
+                    
+                    const merged = [...newItems, ...existing].sort((a, b) => 
+                        new Date(b.timestamp) - new Date(a.timestamp)
+                    );
+                    
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+                    
+                    renderFAQ();
+                    
+                    if (failCount === 0) {
+                        showStatus('importStatus', `✓ Imported and timestamped ${successCount} items successfully.`, 'success');
+                    } else {
+                        showStatus('importStatus', `✓ Imported ${successCount + failCount} items. ${successCount} timestamped, ${failCount} local only.`, 'info');
+                    }
+                    
+                    setTimeout(() => hideStatus('importStatus'), 8000);
+                    
+                } catch (err) {
+                    showStatus('importStatus', 'Failed to import: ' + err.message, 'error');
+                }
+            };
+            reader.readAsText(file);
         }
 
         // Initialize
