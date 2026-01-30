@@ -1,0 +1,200 @@
+[
+  {
+    "id": "faq001",
+    "question": "How is DSO different from other \"theories of everything\"?",
+    "category": "methodology",
+    "answer": "DSO inverts the ontological stack. Standard physics treats spacetime, particles, and forces as primitives and tries to unify them. DSO posits Energy as the sole primitive — spacetime, particles, and forces are derived structures. It's not a modification of existing theories; it's a different answer to \"what exists fundamentally.\" Most ToE attempts add complexity; DSO subtracts assumptions.",
+    "references": "Recognition_Conditions_Novel_Frameworks.docx; DSO_Epistemic_Foundation.docx",
+    "timestamp": "2026-01-29T23:45:00.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq002",
+    "question": "Why should I trust derivations over measurements?",
+    "category": "methodology",
+    "answer": "You shouldn't trust blindly — you should verify. DSO derives values (like ℏ), then compares to measurements. If they match, the derivation is validated. If they don't, DSO is falsified. The point isn't \"derivation beats measurement\" — it's that derivability reveals whether a constant is fundamental or emergent. Measurement tells you what; derivation tells you why.",
+    "references": "DOI 10.5281/zenodo.15058929",
+    "timestamp": "2026-01-29T23:45:01.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq003",
+    "question": "What are DSO's axioms/assumptions?",
+    "category": "methodology",
+    "answer": "One ontological primitive: Energy. One structural claim: Energy manifests through Density (D), Spin/Structure (S), and Orientation (O). One validity criterion: scale invariance — the same relationships hold from Planck to cosmic scales. DSO refuses to assume: spacetime as primitive, force mediation, particles as fundamental, or scale-local formalisms.",
+    "references": "DSO_Epistemic_Foundation.docx",
+    "timestamp": "2026-01-29T23:45:02.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq004",
+    "question": "How is this different from MOND?",
+    "category": "comparison",
+    "answer": "MOND modifies Newtonian dynamics with an acceleration threshold (a₀). It's a phenomenological fix — it describes rotation curves but doesn't explain why a₀ exists. DSO derives rotation curves from density geometry with zero free parameters. MOND asks \"what if gravity changes at low acceleration?\" DSO asks \"what if 'missing mass' is a category error?\" MOND modifies; DSO reframes.",
+    "references": "DOI 10.5281/zenodo.15103857",
+    "timestamp": "2026-01-29T23:45:03.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq005",
+    "question": "How is this different from General Relativity?",
+    "category": "comparison",
+    "answer": "GR treats spacetime as a primitive that curves in response to mass-energy. DSO treats spacetime as emergent from D·S·O geometry of Energy. GR is a highly successful scale-local formalism; DSO is a scale-invariant ontology. GR is not \"wrong\" — it's a valid approximation at certain scales, like Newtonian gravity is valid at low velocities. DSO explains why GR works where it does.",
+    "references": "(pending GR reconciliation paper)",
+    "timestamp": "2026-01-29T23:45:04.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq006",
+    "question": "Is this just rebranded Loop Quantum Gravity / String Theory / etc.?",
+    "category": "comparison",
+    "answer": "No. LQG quantizes spacetime. Strings posit 1D fundamental objects. Both retain spacetime as primitive. DSO eliminates spacetime as primitive entirely — it emerges from Energy's D·S·O structure. The mathematical formalisms share no ancestry. If you see overlap, it's because they're all attempting to solve the same problems, not because DSO derives from them.",
+    "references": "",
+    "timestamp": "2026-01-29T23:45:05.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq007",
+    "question": "What's the evidence for DSO?",
+    "category": "evidence",
+    "answer": "(1) ℏ derived from geometry matches CODATA exactly. (2) Galaxy rotation curves for 175 SPARC galaxies fit with zero free parameters, 98.6% agreement with observations. (3) Framework predicts density-dependent phase behavior — subsequently observed in superfluid experiments (2026). (4) Predicts \"impossible\" early galaxies — JWST keeps confirming. Evidence is predictive success across scales without parameter fitting.",
+    "references": "DOI 10.5281/zenodo.15058929; DOI 10.5281/zenodo.15103857",
+    "timestamp": "2026-01-29T23:45:06.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq008",
+    "question": "Has this been peer reviewed?",
+    "category": "evidence",
+    "answer": "Papers are published on Zenodo with DOIs establishing priority. Peer review requests sent to relevant physicists including Stacy McGaugh. The framework is publicly available for scrutiny. Traditional journal peer review is being pursued, but timestamps and public availability ensure the work is on record regardless of publication venue. Science is validated by replication and predictive success, not credentials.",
+    "references": "https://zenodo.org/communities/dso-framework",
+    "timestamp": "2026-01-29T23:45:07.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq009",
+    "question": "Why haven't I heard of this?",
+    "category": "evidence",
+    "answer": "Recognition lag is normal for foundational reframings. Boltzmann's statistical mechanics, Wegener's continental drift, and Einstein's 1905 papers all faced initial silence or dismissal. DSO inverts primitives — it doesn't fit existing categories (not a GR modification, not a quantum interpretation, not alternative cosmology). When reviewers don't know what box to put something in, silence is the default response.",
+    "references": "Recognition_Conditions_Novel_Frameworks.docx",
+    "timestamp": "2026-01-29T23:45:08.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq010",
+    "question": "What does αΩ = D·Ω·O actually mean?",
+    "category": "interpretation",
+    "answer": "It's the core equation: Energy's manifestation (αΩ) equals the product of Density, Spin/Structure, and Orientation. Every physical phenomenon is a specific D·S·O configuration. Mass is high-D stable S with fixed O. Light is low-D propagating O oscillation. Gravity is D-gradient effect on S·O geometry. The equation literally spells ΘΕΟΣ (Theos) — \"God\" in Greek — which is either coincidence or poetic.",
+    "references": "DOI 10.5281/zenodo.15058929",
+    "timestamp": "2026-01-29T23:45:09.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq011",
+    "question": "Is this physics or philosophy?",
+    "category": "interpretation",
+    "answer": "Both, appropriately. Physics without ontology is curve-fitting. Philosophy without prediction is speculation. DSO makes explicit ontological claims (Energy is primitive) and derives measurable predictions (ℏ value, rotation curves). It's falsifiable physics grounded in clear metaphysics. The question \"is it physics or philosophy?\" is a category error — foundational physics is always both.",
+    "references": "DSO_Epistemic_Foundation.docx",
+    "timestamp": "2026-01-29T23:45:10.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq012",
+    "question": "What would falsify DSO?",
+    "category": "interpretation",
+    "answer": "(1) Direct detection of dark matter particles. (2) A galaxy rotation curve that requires dark matter even after DSO analysis. (3) A derived constant that doesn't match measurement. (4) Scale-dependent breakdown — phenomena at one scale contradicting DSO predictions at another. (5) Discovery of truly fundamental entity that isn't Energy configuration. DSO is aggressively falsifiable — that's the point.",
+    "references": "",
+    "timestamp": "2026-01-29T23:45:11.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq013",
+    "question": "What is ↄc exactly?",
+    "category": "technical",
+    "answer": "ↄc (density-velocity coupling) is the DSO-derived relationship between local baryonic density and emergent rotational velocity in galaxies. It replaces dark matter halos. Formula: ↄc = f(D,S,O) where inputs are observed density distribution. Not a single constant but a derived relationship — the \"constant\" is the formula itself. Validated against 175 SPARC galaxies.",
+    "references": "DOI 10.5281/zenodo.15103857",
+    "timestamp": "2026-01-29T23:45:12.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq014",
+    "question": "How does DSO handle quantum mechanics?",
+    "category": "technical",
+    "answer": "QM describes O (Orientation) behavior at small scales where D (Density) is below coherence threshold. \"Wave function\" is the probability distribution of O configurations. \"Collapse\" is O configuration resolving when D exceeds threshold (measurement). Uncertainty isn't epistemic limitation but structural feature of low-D regimes. QM formalism is preserved; interpretation changes.",
+    "references": "(pending QM reconciliation paper)",
+    "timestamp": "2026-01-29T23:45:13.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq015",
+    "question": "Why the golden ratio (φ)?",
+    "category": "technical",
+    "answer": "φ emerges from recursive self-similarity — the ratio where part relates to whole as whole relates to sum. D·S·O structure is inherently recursive (structures within structures at all scales). φ-geometry is the unique scaling solution for self-similar systems. It's not numerology — it's the mathematical consequence of scale invariance. φ appears because the universe is self-similar, not because the number is mystical.",
+    "references": "DOI 10.5281/zenodo.15058929",
+    "timestamp": "2026-01-29T23:45:14.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq016",
+    "question": "Who created DSO?",
+    "category": "general",
+    "answer": "Joe W. Garrett, systems architect with 25+ years building data-driven applications across federal, healthcare, and private sectors. Pattern recognition across scales — the same structural relationships appearing in database optimization, neural architectures, and cosmological data — led to the framework. Not a credentialed physicist, which is either disqualifying or irrelevant depending on whether you evaluate work by origin or content.",
+    "references": "https://vaultsync.solutions",
+    "timestamp": "2026-01-29T23:45:15.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq017",
+    "question": "Is this a religion?",
+    "category": "general",
+    "answer": "No. The equation spelling \"THEO\" is noted but not claimed as evidence of anything supernatural. DSO makes falsifiable empirical predictions — religion doesn't. If DSO is wrong, experiments will show it. The framework's validity is independent of any metaphysical interpretation users might attach. You can use DSO and be atheist, theist, or agnostic — the physics works the same.",
+    "references": "",
+    "timestamp": "2026-01-29T23:45:16.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  },
+  {
+    "id": "faq018",
+    "question": "What's next for DSO?",
+    "category": "general",
+    "answer": "(1) Peer review engagement with physicists. (2) G and α derivation papers. (3) QM and GR reconciliation papers. (4) Continued JWST/SPARC validation tracking. (5) Seismic and weather prediction system refinement. (6) Patent portfolio development for practical applications. The framework is complete; documentation and validation are ongoing.",
+    "references": "https://zenodo.org/communities/dso-framework",
+    "timestamp": "2026-01-29T23:45:17.000Z",
+    "hash": "",
+    "otsProof": null,
+    "otsStatus": "none"
+  }
+]
