@@ -23,9 +23,15 @@
             <a href="faq.html">FAQ</a>
             <a href="visuals.html">Visuals</a>
             <a href="contact.html">Contact</a>
+            <a href="#" id="auth-login-btn" class="auth-nav-btn" onclick="event.preventDefault(); showLoginModal()">🔒 Login</a>
+            <a href="#" id="auth-logout-btn" class="auth-nav-btn" style="display:none;" onclick="event.preventDefault(); logout()">🔓 Logout</a>
         </nav>
 
-        <section class="content-section">
+        <div class="auth-prompt" style="display:none;">
+            <p>🔒 <a onclick="showLoginModal()">Login</a> to add, edit, or delete predictions.</p>
+        </div>
+
+        <section class="content-section auth-required">
             <div class="section-title">New Prediction</div>
             
             <div class="form-group">
@@ -96,7 +102,7 @@
             <div id="predictions-container"></div>
         </section>
 
-        <section class="content-section" style="margin-top: 2rem;">
+        <section class="content-section auth-required" style="margin-top: 2rem;">
             <div class="section-title">Import Predictions</div>
             <input type="file" id="importFile" accept=".json" onchange="handleImport(event)">
         </section>
@@ -167,9 +173,9 @@
 
             container.innerHTML = predictions.map(p => `
                 <div class="card ${p.predictionStatus}">
-                    <div class="card-actions">
+                    ${isAuthenticated() ? `<div class="card-actions">
                         <button class="card-action-btn" onclick="deletePrediction('${p.id}')" title="Delete">🗑</button>
-                    </div>
+                    </div>` : ''}
                     <div class="card-header">
                         <div class="card-title">${escapeHtml(p.title)}</div>
                         <div class="card-timestamp">${formatTimestamp(p.timestamp)}</div>
@@ -209,6 +215,7 @@
         }
 
         // Initialize
+        initAuth();
         renderPredictions();
     </script>
 </body>

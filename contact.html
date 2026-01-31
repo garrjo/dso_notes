@@ -129,6 +129,8 @@
             <a href="faq.html">FAQ</a>
             <a href="visuals.html">Visuals</a>
             <a href="contact.html" class="active">Contact</a>
+            <a href="#" id="auth-login-btn" class="auth-nav-btn" onclick="event.preventDefault(); showLoginModal()">🔒 Login</a>
+            <a href="#" id="auth-logout-btn" class="auth-nav-btn" style="display:none;" onclick="event.preventDefault(); logout()">🔓 Logout</a>
         </nav>
 
         <section class="framework-summary">
@@ -234,5 +236,8 @@
             <div class="footer-credit">Joe W. Garrett · VaultSync Solutions Inc. · 2025</div>
         </footer>
     </div>
+
+    <script src="shared.js"></script>
+    <script>initAuth();</script>
 </body>
 </html>

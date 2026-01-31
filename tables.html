@@ -70,9 +70,15 @@
             <a href="faq.html">FAQ</a>
             <a href="visuals.html">Visuals</a>
             <a href="contact.html">Contact</a>
+            <a href="#" id="auth-login-btn" class="auth-nav-btn" onclick="event.preventDefault(); showLoginModal()">🔒 Login</a>
+            <a href="#" id="auth-logout-btn" class="auth-nav-btn" style="display:none;" onclick="event.preventDefault(); logout()">🔓 Logout</a>
         </nav>
 
-        <section class="content-section">
+        <div class="auth-prompt" style="display:none;">
+            <p>🔒 <a onclick="showLoginModal()">Login</a> to add, edit, or delete constants.</p>
+        </div>
+
+        <section class="content-section auth-required">
             <div class="section-title">Add Derived Constant</div>
             
             <div class="form-row">
@@ -140,7 +146,7 @@
             <div id="constants-container"></div>
         </section>
 
-        <section class="content-section" style="margin-top: 2rem;">
+        <section class="content-section auth-required" style="margin-top: 2rem;">
             <div class="section-title">Import Constants</div>
             <input type="file" id="importFile" accept=".json" onchange="handleImport(event)">
         </section>
@@ -216,9 +222,9 @@
 
             container.innerHTML = constants.map(c => `
                 <div class="card constant-card">
-                    <div class="card-actions">
+                    ${isAuthenticated() ? `<div class="card-actions">
                         <button class="card-action-btn" onclick="deleteConstant('${c.id}')" title="Delete">🗑</button>
-                    </div>
+                    </div>` : ''}
                     <div class="card-header">
                         <div class="card-title">${escapeHtml(c.constantName)} ${c.symbol ? `(${escapeHtml(c.symbol)})` : ''}</div>
                         <div class="card-timestamp">${formatTimestamp(c.timestamp)}</div>
@@ -272,6 +278,7 @@
         }
 
         // Initialize
+        initAuth();
         renderConstants();
     </script>
 </body>

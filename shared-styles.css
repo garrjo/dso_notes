@@ -554,6 +554,56 @@ footer .footer-credit {
     color: #666;
 }
 
+/* Auth */
+.login-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.login-modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 380px;
+    margin: 1rem;
+}
+
+.login-modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-gold);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.auth-nav-btn {
+    margin-left: auto;
+    font-size: 0.85rem !important;
+}
+
+.auth-prompt {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.auth-prompt a {
+    color: var(--accent-gold);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     .container {

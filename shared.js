@@ -1,6 +1,117 @@
 // Shared utilities for DSO Framework site
 // OpenTimestamps integration and common functions
 
+// --- Authentication ---
+const AUTH_HASH = '8c3960b5a3f5b9651127c0780ce07b944cf6f36c324c8e2259d0db9e0d7ce939';
+
+async function hashCredentials(username, password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(username + ':' + password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function isAuthenticated() {
+    return sessionStorage.getItem('dso_auth') === 'true';
+}
+
+async function login(username, password) {
+    const hash = await hashCredentials(username, password);
+    if (hash === AUTH_HASH) {
+        sessionStorage.setItem('dso_auth', 'true');
+        return true;
+    }
+    return false;
+}
+
+function logout() {
+    sessionStorage.removeItem('dso_auth');
+    updateAuthUI();
+}
+
+function updateAuthUI() {
+    const authed = isAuthenticated();
+    document.querySelectorAll('.auth-required').forEach(el => {
+        el.style.display = authed ? '' : 'none';
+    });
+    document.querySelectorAll('.auth-prompt').forEach(el => {
+        el.style.display = authed ? 'none' : '';
+    });
+    const loginBtn = document.getElementById('auth-login-btn');
+    const logoutBtn = document.getElementById('auth-logout-btn');
+    if (loginBtn) loginBtn.style.display = authed ? 'none' : '';
+    if (logoutBtn) logoutBtn.style.display = authed ? '' : 'none';
+
+    // Re-render cards to update action buttons (delete/copy)
+    if (typeof renderNotes === 'function') renderNotes();
+    if (typeof renderPredictions === 'function') renderPredictions();
+    if (typeof renderFAQ === 'function') renderFAQ();
+    if (typeof renderConstants === 'function') renderConstants();
+    if (typeof renderVisuals === 'function') renderVisuals();
+}
+
+function showLoginModal() {
+    const existing = document.getElementById('login-modal');
+    if (existing) { existing.style.display = 'flex'; return; }
+
+    const modal = document.createElement('div');
+    modal.id = 'login-modal';
+    modal.className = 'login-modal-overlay';
+    modal.innerHTML = `
+        <div class="login-modal">
+            <div class="login-modal-title">Authentication Required</div>
+            <div class="form-group">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" autocomplete="current-password">
+            </div>
+            <div id="login-error" style="display:none; color:#e74c3c; font-size:0.85rem; margin-bottom:0.75rem;"></div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="login-submit-btn">Login</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('login-modal').style.display='none'">Cancel</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('login-submit-btn').addEventListener('click', handleLogin);
+    document.getElementById('login-password').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
+    document.getElementById('login-username').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('login-password').focus();
+    });
+}
+
+async function handleLogin() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errorEl = document.getElementById('login-error');
+
+    if (!username || !password) {
+        errorEl.textContent = 'Please enter both username and password.';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    const success = await login(username, password);
+    if (success) {
+        document.getElementById('login-modal').style.display = 'none';
+        updateAuthUI();
+    } else {
+        errorEl.textContent = 'Invalid credentials.';
+        errorEl.style.display = 'block';
+    }
+}
+
+function initAuth() {
+    updateAuthUI();
+}
+
 const OTS_CALENDARS = [
     'https://alice.btc.calendar.opentimestamps.org',
     'https://bob.btc.calendar.opentimestamps.org',
@@ -231,9 +342,11 @@ function getNavHTML(activePage) {
         { id: 'visuals', label: 'Visuals', file: 'visuals.html' },
         { id: 'contact', label: 'Contact', file: 'contact.html' }
     ];
-    
+
     return `<nav>
         ${pages.map(p => `<a href="${p.file}" class="${p.id === activePage ? 'active' : ''}">${p.label}</a>`).join('')}
+        <a href="#" id="auth-login-btn" class="auth-nav-btn" onclick="event.preventDefault(); showLoginModal()">🔒 Login</a>
+        <a href="#" id="auth-logout-btn" class="auth-nav-btn" style="display:none;" onclick="event.preventDefault(); logout()">🔓 Logout</a>
     </nav>`;
 }
 

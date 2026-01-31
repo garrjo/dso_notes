@@ -23,9 +23,15 @@
             <a href="faq.html" class="active">FAQ</a>
             <a href="visuals.html">Visuals</a>
             <a href="contact.html">Contact</a>
+            <a href="#" id="auth-login-btn" class="auth-nav-btn" onclick="event.preventDefault(); showLoginModal()">🔒 Login</a>
+            <a href="#" id="auth-logout-btn" class="auth-nav-btn" style="display:none;" onclick="event.preventDefault(); logout()">🔓 Logout</a>
         </nav>
 
-        <section class="content-section">
+        <div class="auth-prompt" style="display:none;">
+            <p>🔒 <a onclick="showLoginModal()">Login</a> to add, edit, or delete FAQ entries.</p>
+        </div>
+
+        <section class="content-section auth-required">
             <div class="section-title">Add FAQ Entry</div>
             
             <div class="form-group">
@@ -78,7 +84,7 @@
             <div id="faq-container"></div>
         </section>
 
-        <section class="content-section" style="margin-top: 2rem;">
+        <section class="content-section auth-required" style="margin-top: 2rem;">
             <div class="section-title">Import FAQ</div>
             <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Select a JSON file to import FAQ entries.</p>
             <input type="file" id="importFile" accept=".json" style="display: none;">
@@ -181,9 +187,9 @@
                 items.forEach(faq => {
                     html += `
                         <div class="card" style="cursor: pointer;" onclick="toggleFAQ(this)">
-                            <div class="card-actions">
+                            ${isAuthenticated() ? `<div class="card-actions">
                                 <button class="card-action-btn" onclick="event.stopPropagation(); deleteFAQ('${faq.id}')" title="Delete">🗑</button>
-                            </div>
+                            </div>` : ''}
                             <div class="card-header" style="margin-bottom: 0;">
                                 <div class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
                                     <span class="faq-toggle">+</span>
@@ -326,6 +332,7 @@
         }
 
         // Initialize
+        initAuth();
         renderFAQ();
     </script>
 </body>

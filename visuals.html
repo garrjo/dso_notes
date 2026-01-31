@@ -68,9 +68,15 @@
             <a href="faq.html">FAQ</a>
             <a href="visuals.html" class="active">Visuals</a>
             <a href="contact.html">Contact</a>
+            <a href="#" id="auth-login-btn" class="auth-nav-btn" onclick="event.preventDefault(); showLoginModal()">🔒 Login</a>
+            <a href="#" id="auth-logout-btn" class="auth-nav-btn" style="display:none;" onclick="event.preventDefault(); logout()">🔓 Logout</a>
         </nav>
 
-        <section class="content-section">
+        <div class="auth-prompt" style="display:none;">
+            <p>🔒 <a onclick="showLoginModal()">Login</a> to add, edit, or delete visuals.</p>
+        </div>
+
+        <section class="content-section auth-required">
             <div class="section-title">Add Visual / Diagram</div>
             
             <div class="form-group">
@@ -133,7 +139,7 @@
             <div id="visuals-container"></div>
         </section>
 
-        <section class="content-section" style="margin-top: 2rem;">
+        <section class="content-section auth-required" style="margin-top: 2rem;">
             <div class="section-title">Import Visuals</div>
             <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Select a JSON file to import visual entries.</p>
             <input type="file" id="importFile" accept=".json" style="display: none;">
@@ -270,9 +276,9 @@
 
             container.innerHTML = visuals.map(v => `
                 <div class="card visual-card">
-                    <div class="card-actions">
+                    ${isAuthenticated() ? `<div class="card-actions">
                         <button class="card-action-btn" onclick="deleteVisual('${v.id}')" title="Delete">🗑</button>
-                    </div>
+                    </div>` : ''}
                     <div class="card-header">
                         <div class="card-title">${escapeHtml(v.title)}</div>
                         <div class="card-timestamp">${formatTimestamp(v.timestamp)}</div>
@@ -395,6 +401,7 @@
         }
 
         // Initialize
+        initAuth();
         renderVisuals();
     </script>
 </body>
