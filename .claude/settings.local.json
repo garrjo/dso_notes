@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(powershell:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd client-side authentication to protect add/edit/delete actions\n\nCredentials are stored as a SHA-256 hash \\(never plaintext\\). All form\nsections, import controls, and delete/copy buttons are hidden behind\nauth. Viewing existing content remains public. Session persists per\nbrowser tab via sessionStorage. Login/logout button added to nav on\nall pages.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
+    ]
+  }
+}
