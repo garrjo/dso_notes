@@ -2,7 +2,7 @@
 // OpenTimestamps integration and common functions
 
 // --- Authentication ---
-const AUTH_HASH = '8c3960b5a3f5b9651127c0780ce07b944cf6f36c324c8e2259d0db9e0d7ce939';
+const AUTH_HASH = 'd356e25503f1e098fed910677c9a3a6cb15e4d265e92b13bab90521fb73bacfb';
 
 async function hashCredentials(username, password) {
     const encoder = new TextEncoder();
